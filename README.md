@@ -31,6 +31,34 @@ At V=1,000, MV is faster everywhere except on Barabasi-Albert graphs.
 | Large dense graphs | Cubic in V | Approximately O(V^2.5) |
 | Best regime | V < 500, any density | V > 500, sparse graphs |
 
+## What Problems These Algorithms Solve
+
+A maximum matching is the largest possible set of edges that do not share vertices.
+In plain terms, it answers: **how do I create as many disjoint one-to-one pairs as possible?**
+Both Blossom and Micali-Vazirani solve this problem on **general graphs**, so they work even when
+the compatibility graph is not bipartite and contains odd cycles.
+
+| Real-world task | Matching interpretation |
+|:--|:--|
+| Peer review, mentoring, pair programming, partner work | Vertices are people; an edge means two people can be paired. A maximum matching finds the largest set of simultaneous pairings. |
+| Exchange and swap problems | Vertices are participants or assets; an edge means a feasible swap or exchange. Matching maximizes how many deals can happen at once. |
+| Communication and network scheduling | Vertices are endpoints; an edge means a direct link can be activated. Matching selects the largest set of non-conflicting simultaneous links. |
+| Molecular graph analysis | In chemistry, matchings and perfect matchings appear in analyses such as Kekule structures and resonance patterns in conjugated molecules. |
+| Graph coarsening and preprocessing | Matching can be used to merge or pair nearby vertices before partitioning, sparsification, or multilevel graph algorithms. |
+| Resource pairing in fleets, robotics, or sensor systems | Vertices are units; an edge means two units can be paired under distance, compatibility, or safety constraints. |
+
+For this benchmark, the practical takeaway is not that the algorithms solve different problems;
+they solve the **same** maximum-matching problem. The difference is where each implementation is a
+better engineering choice: Blossom is usually attractive on smaller or denser graphs, while
+Micali-Vazirani becomes more attractive on larger sparse graphs.
+
+If your problem is strictly bipartite, weighted, or preference-based, a different formulation may
+fit better:
+
+- **Bipartite cardinality matching:** often solved with specialized bipartite algorithms such as Hopcroft-Karp.
+- **Weighted one-to-one assignment:** use maximum-weight matching or Hungarian/min-cost-flow style methods.
+- **Stable matching:** use stable marriage / stable roommates algorithms, since maximum matching does not optimize for stability or preference satisfaction.
+
 ## Graph Types
 
 The benchmarks use the following graph families. All generators are from the `geometric-traits` crate.
