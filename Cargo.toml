@@ -1,0 +1,19 @@
+[package]
+name = "maximal-matching-benchmark"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+geometric-traits = { git = "https://github.com/earth-metabolome-initiative/geometric-traits" }
+
+[dev-dependencies]
+criterion = { version = "0.8", features = ["html_reports"] }
+
+[[bench]]
+name = "scaling_with_size"
+harness = false
+
+[[bench]]
+name = "scaling_with_density"
+harness = false
