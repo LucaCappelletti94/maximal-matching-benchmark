@@ -1,5 +1,8 @@
 # Blossom vs Micali-Vazirani: Maximum Matching Benchmark
 
+[![CI](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/LucaCappelletti94/maximal-matching-benchmark)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/blob/main/LICENSE)
+
 ## Abstract
 
 We benchmark two maximum matching algorithms, Blossom \[1\] (O(V^3)) and Micali-Vazirani \[2\] (O(E sqrt(V))), from the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) crate across 210 graph configurations spanning 27 benchmark groups (420 individual measurements). On small graphs (fewer than 500 vertices), Blossom is consistently 2-8x faster due to lower constant overhead. On large sparse graphs, Micali-Vazirani dominates, reaching up to 172x faster on a 10,000-vertex star graph. The crossover point varies between 75 and 750 vertices depending on topology and edge density: sparse and linear structures (stars, paths, grids) cross over earliest, while dense structured bipartite graphs (crown, complete bipartite) favor Blossom at all tested sizes. In general, sparser graphs produce wider performance gaps at scale, while increasing density narrows the difference toward the theoretical O(V^3) vs O(V^2.5) ratio.
@@ -11,8 +14,8 @@ We benchmark two maximum matching algorithms, Blossom \[1\] (O(V^3)) and Micali-
 </p>
 
 Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale).
-At V~100, Blossom's red polygon envelops MV's blue on most axes. By V~500 the polygons cross over.
-At V~1,000, MV is faster everywhere except on Barabasi-Albert graphs.
+At V=100, Blossom's red polygon envelops MV's blue on most axes. By V=500 the polygons cross over.
+At V=1,000, MV is faster everywhere except on Barabasi-Albert graphs.
 
 ## Algorithms Overview
 
@@ -68,22 +71,21 @@ The benchmarks use the following graph families. All generators are from the `ge
 
 The 12 largest speedup ratios observed across all 420 measurements:
 
-| Graph | \|V\| | \|E\| | Blossom | MV | Winner | Speedup | |
-|:--|--:|--:|--:|--:|:--|--:|:--|
-| Star | 10,000 | 9,999 | 137 ms | **799 µs** | MV | **171.9x** | `████████████████████` |
-| Star | 20,000 | 19,999 | 551 ms | **4.52 ms** | MV | **122.0x** | `███████████████████░` |
-| Star | 5,000 | 4,999 | 34.5 ms | **404 µs** | MV | **85.3x** | `█████████████████░░░` |
-| Friendship | 499 | 747 | 9.47 ms | **142 µs** | MV | **66.2x** | `████████████████░░░░` |
-| Cycle | 10,000 | 10,000 | 69.5 ms | **1.41 ms** | MV | **49.2x** | `███████████████░░░░░` |
-| Path | 20,000 | 19,999 | 275 ms | **5.74 ms** | MV | **48.0x** | `███████████████░░░░░` |
-| Grid | 10,000 | 19,800 | 67.3 ms | **1.44 ms** | MV | **46.8x** | `███████████████░░░░░` |
-| Hypercube d14 | 16,384 | 114,688 | 184 ms | **11.2 ms** | MV | **16.5x** | `███████████░░░░░░░░░` |
-| Sparse d6 | 10,000 | 30,000 | 125 ms | **11.0 ms** | MV | **11.3x** | `█████████░░░░░░░░░░░` |
-| Crown | 50 | 600 | **3.57 µs** | 33.7 µs | Blossom | **9.4x** | `█████████░░░░░░░░░░░` |
-| Comp. Bipartite | 20 | 100 | **812 ns** | 6.89 µs | Blossom | **8.5x** | `████████░░░░░░░░░░░░` |
-| Crown | 150 | 5,550 | **27.9 µs** | 233 µs | Blossom | **8.4x** | `████████░░░░░░░░░░░░` |
+| Graph | \|V\| | \|E\| | Blossom | MV | Winner | Speedup |
+|:--|--:|--:|--:|--:|:--|--:|
+| Star | 10,000 | 9,999 | 137 ms | **799 µs** | MV | **171.9x** |
+| Star | 20,000 | 19,999 | 551 ms | **4.52 ms** | MV | **122.0x** |
+| Star | 5,000 | 4,999 | 34.5 ms | **404 µs** | MV | **85.3x** |
+| Friendship | 499 | 747 | 9.47 ms | **142 µs** | MV | **66.2x** |
+| Cycle | 10,000 | 10,000 | 69.5 ms | **1.41 ms** | MV | **49.2x** |
+| Path | 20,000 | 19,999 | 275 ms | **5.74 ms** | MV | **48.0x** |
+| Grid | 10,000 | 19,800 | 67.3 ms | **1.44 ms** | MV | **46.8x** |
+| Hypercube d14 | 16,384 | 114,688 | 184 ms | **11.2 ms** | MV | **16.5x** |
+| Sparse d6 | 10,000 | 30,000 | 125 ms | **11.0 ms** | MV | **11.3x** |
+| Crown | 50 | 600 | **3.57 µs** | 33.7 µs | Blossom | **9.4x** |
+| Comp. Bipartite | 20 | 100 | **812 ns** | 6.89 µs | Blossom | **8.5x** |
+| Crown | 150 | 5,550 | **27.9 µs** | 233 µs | Blossom | **8.4x** |
 
-*Bar: log-scale, 20-char width. Bars represent speedup magnitude regardless of winner.*
 
 ## Size Scaling
 
@@ -641,6 +643,10 @@ cargo bench --bench topology_comparison
 cargo bench --bench realworld_structures
 cargo bench --bench extreme_cases
 ```
+
+CI does two lighter-weight benchmark checks: `cargo bench --benches --no-run` to verify the
+optimized benchmark targets compile, and `cargo test --benches` to smoke-test the Criterion
+suites without running the full multi-hour statistical benchmark job.
 
 Results are stored in `target/criterion/` with HTML reports viewable at `target/criterion/report/index.html`.
 
