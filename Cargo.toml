@@ -17,3 +17,15 @@ harness = false
 [[bench]]
 name = "scaling_with_density"
 harness = false
+
+[[bench]]
+name = "topology_comparison"
+harness = false
+
+[[bench]]
+name = "realworld_structures"
+harness = false
+
+[[bench]]
+name = "extreme_cases"
+harness = false
