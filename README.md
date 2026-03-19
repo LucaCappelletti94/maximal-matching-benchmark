@@ -5,17 +5,17 @@
 
 ## Abstract
 
-We benchmark two maximum matching algorithms, Blossom \[1\] (O(V^3)) and Micali-Vazirani \[2\] (O(E sqrt(V))), from the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) crate across 210 graph configurations spanning 27 benchmark groups (420 individual measurements). On small graphs (fewer than 500 vertices), Blossom is consistently 2-8x faster due to lower constant overhead. On large sparse graphs, Micali-Vazirani dominates, reaching up to 172x faster on a 10,000-vertex star graph. The crossover point varies between 75 and 750 vertices depending on topology and edge density: sparse and linear structures (stars, paths, grids) cross over earliest, while dense structured bipartite graphs (crown, complete bipartite) favor Blossom at all tested sizes. In general, sparser graphs produce wider performance gaps at scale, while increasing density narrows the difference toward the theoretical O(V^3) vs O(V^2.5) ratio.
+We benchmark two maximum matching algorithms, Blossom \[1\] (O(V^3)) and Micali-Vazirani \[2\] (O(E sqrt(V))), from the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) crate across 219 graph configurations spanning 28 benchmark groups (438 individual measurements). On small graphs (fewer than 500 vertices), Blossom is consistently 2-8x faster due to lower constant overhead. On large sparse graphs, Micali-Vazirani dominates, reaching up to 172x faster on a 10,000-vertex star graph. The crossover point varies between 75 and 750 vertices depending on topology and edge density: sparse and linear structures (stars, paths, grids) cross over earliest, while dense structured bipartite graphs (crown, complete bipartite) favor Blossom at all tested sizes. In general, sparser graphs produce wider performance gaps at scale, while increasing density narrows the difference toward the theoretical O(V^3) vs O(V^2.5) ratio.
 
 ## Visual Summary
 
 <p align="center">
-  <img src="docs/radar_triptych.svg" alt="Radar chart showing algorithm performance across topologies at V~100, V~500, and V~1000" width="100%">
+  <img src="docs/radar_triptych.svg" alt="Radar chart showing algorithm performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
 </p>
 
 Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale).
 At V=100, Blossom's red polygon envelops MV's blue on most axes. By V=500 the polygons cross over.
-At V=1,000, MV is faster everywhere except on Barabasi-Albert graphs.
+At V=1,000, MV is faster everywhere except on Barabasi-Albert graphs. At V=2,000, MV wins on all topologies.
 
 ## Algorithms Overview
 
@@ -97,7 +97,7 @@ The benchmarks use the following graph families. All generators are from the `ge
 
 ## Headline Results
 
-The 12 largest speedup ratios observed across all 420 measurements:
+The 12 largest speedup ratios observed across all 438 measurements:
 
 | Graph | \|V\| | \|E\| | Blossom | MV | Winner | Speedup |
 |:--|--:|--:|--:|--:|:--|--:|
@@ -342,6 +342,22 @@ At V~500, MV wins on 8 of 11 topologies. The friendship graph (a windmill of 249
 | Star | 1,000 | 999 | 1.29 ms | **86.2 µs** | MV | **15.0x** |
 
 At V~1,000, MV wins on 8 of 9 topologies. Barabasi-Albert graphs (power-law degree distribution with high-degree hubs) are the sole remaining Blossom win.
+
+### V ~ 2,000
+
+| Topology | \|V\| | \|E\| | Blossom | MV | Winner | Speedup |
+|:--|--:|--:|--:|--:|:--|--:|
+| Barabasi-Albert | 2,000 | 5,994 | 3.79 ms | **2.57 ms** | MV | 1.5x |
+| Erdos-Renyi | 2,000 | 10,034 | 3.99 ms | **1.25 ms** | MV | 3.2x |
+| Watts-Strogatz | 2,000 | 6,000 | 3.36 ms | **656 µs** | MV | 5.1x |
+| Torus | 2,025 | 4,050 | 3.86 ms | **729 µs** | MV | 5.3x |
+| Grid | 2,025 | 3,960 | 3.11 ms | **570 µs** | MV | 5.5x |
+| Wheel | 2,000 | 3,998 | 2.77 ms | **317 µs** | MV | 8.7x |
+| Path | 2,000 | 1,999 | 2.80 ms | **285 µs** | MV | 9.8x |
+| Cycle | 2,000 | 2,000 | 2.92 ms | **286 µs** | MV | 10.2x |
+| Star | 2,000 | 1,999 | 5.71 ms | **167 µs** | MV | **34.2x** |
+
+At V~2,000, MV wins on all 9 topologies. Barabasi-Albert flipped from a Blossom win at V~1,000 (1.6x) to an MV win (1.5x), but remains the closest contest.
 
 ## Real-World Graph Models
 
@@ -612,10 +628,10 @@ The crossover is not a simple function of average degree. Structural properties 
 |:--|--:|--:|:--|
 | `scaling_with_size` | 5 | 46 | Fixed density, varying vertex count |
 | `scaling_with_density` | 5 | 34 | Fixed vertices, varying edge probability |
-| `topology_comparison` | 3 | 35 | All graph types at fixed vertex count |
+| `topology_comparison` | 4 | 44 | All graph types at fixed vertex count |
 | `realworld_structures` | 7 | 48 | Network science graph models |
 | `extreme_cases` | 7 | 47 | Pathological and structured graphs |
-| **Total** | **27** | **210** | **420 data points** |
+| **Total** | **28** | **219** | **438 data points** |
 
 ## Reproducing
 

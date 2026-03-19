@@ -84,7 +84,7 @@ fn bench_topology_v500(c: &mut Criterion) {
 }
 
 fn bench_topology_v1000(c: &mut Criterion) {
-    eprintln!("[3/3] Running topology/V1000 benchmarks...");
+    eprintln!("[3/4] Running topology/V1000 benchmarks...");
     let mut group = c.benchmark_group("topology/V1000");
     group
         .sample_size(30)
@@ -103,10 +103,31 @@ fn bench_topology_v1000(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_topology_v2000(c: &mut Criterion) {
+    eprintln!("[4/4] Running topology/V2000 benchmarks...");
+    let mut group = c.benchmark_group("topology/V2000");
+    group
+        .sample_size(10)
+        .measurement_time(Duration::from_secs(30));
+
+    bench_named!(group, "cycle", cycle_graph(2000));
+    bench_named!(group, "path", path_graph(2000));
+    bench_named!(group, "star", star_graph(2000));
+    bench_named!(group, "grid", grid_graph(45, 45));
+    bench_named!(group, "torus", torus_graph(45, 45));
+    bench_named!(group, "wheel", wheel_graph(1999));
+    bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 2000, 0.005));
+    bench_named!(group, "barabasi_albert", barabasi_albert(42, 2000, 3));
+    bench_named!(group, "watts_strogatz", watts_strogatz(42, 2000, 6, 0.3));
+
+    group.finish();
+}
+
 criterion_group!(
     benches,
     bench_topology_v100,
     bench_topology_v500,
     bench_topology_v1000,
+    bench_topology_v2000,
 );
 criterion_main!(benches);
