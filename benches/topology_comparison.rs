@@ -9,7 +9,7 @@ use geometric_traits::{
 
 type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
 
-macro_rules! bench_both {
+macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
         $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
@@ -17,6 +17,9 @@ macro_rules! bench_both {
         });
         $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
             b.iter(|| black_box(g.micali_vazirani()));
+        });
+        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
+            b.iter(|| black_box(g.blum()));
         });
     }};
 }
@@ -30,7 +33,7 @@ macro_rules! bench_named {
         let g: Graph = $graph;
         eprintln!("  {}...", $name);
         let lbl = format!("{}_{}", $name, graph_label(&g));
-        bench_both!($group, lbl, g);
+        bench_all!($group, lbl, g);
     }};
 }
 
@@ -79,6 +82,12 @@ fn bench_topology_v500(c: &mut Criterion) {
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 500, 0.02));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 500, 3));
     bench_named!(group, "watts_strogatz", watts_strogatz(42, 500, 6, 0.3));
+    bench_named!(group, "crown", crown_graph(250));
+    bench_named!(
+        group,
+        "complete_bipartite",
+        complete_bipartite_graph(250, 250)
+    );
 
     group.finish();
 }
@@ -99,6 +108,12 @@ fn bench_topology_v1000(c: &mut Criterion) {
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 1000, 0.01));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 1000, 3));
     bench_named!(group, "watts_strogatz", watts_strogatz(42, 1000, 6, 0.3));
+    bench_named!(group, "crown", crown_graph(500));
+    bench_named!(
+        group,
+        "complete_bipartite",
+        complete_bipartite_graph(500, 500)
+    );
 
     group.finish();
 }
@@ -119,6 +134,12 @@ fn bench_topology_v2000(c: &mut Criterion) {
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 2000, 0.005));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 2000, 3));
     bench_named!(group, "watts_strogatz", watts_strogatz(42, 2000, 6, 0.3));
+    bench_named!(group, "crown", crown_graph(1000));
+    bench_named!(
+        group,
+        "complete_bipartite",
+        complete_bipartite_graph(1000, 1000)
+    );
 
     group.finish();
 }

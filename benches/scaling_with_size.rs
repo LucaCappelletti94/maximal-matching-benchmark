@@ -9,7 +9,7 @@ use geometric_traits::{
 
 type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
 
-macro_rules! bench_both {
+macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
         $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
@@ -17,6 +17,9 @@ macro_rules! bench_both {
         });
         $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
             b.iter(|| black_box(g.micali_vazirani()));
+        });
+        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
+            b.iter(|| black_box(g.blum()));
         });
     }};
 }
@@ -49,7 +52,7 @@ fn bench_sparse_d6(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnm(V={n}, E={})...", n * 3);
         let g: Graph = erdos_renyi_gnm(42, n, n * 3);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -77,7 +80,7 @@ fn bench_medium_d20(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnm(V={n}, E={})...", n * 10);
         let g: Graph = erdos_renyi_gnm(42, n, n * 10);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -106,7 +109,7 @@ fn bench_dense_half(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnm(V={n}, E={m})...");
         let g: Graph = erdos_renyi_gnm(42, n, m);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -134,7 +137,7 @@ fn bench_complete(c: &mut Criterion) {
         eprintln!("  Generating complete_graph(V={n})...");
         let g: Graph = complete_graph(n);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -163,7 +166,7 @@ fn bench_grid(c: &mut Criterion) {
         eprintln!("  Generating grid_graph({k}, {k})...");
         let g: Graph = grid_graph(k, k);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();

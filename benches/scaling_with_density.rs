@@ -9,7 +9,7 @@ use geometric_traits::{
 
 type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
 
-macro_rules! bench_both {
+macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
         $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
@@ -17,6 +17,9 @@ macro_rules! bench_both {
         });
         $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
             b.iter(|| black_box(g.micali_vazirani()));
+        });
+        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
+            b.iter(|| black_box(g.blum()));
         });
     }};
 }
@@ -33,7 +36,7 @@ fn bench_density_v100(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnp(V=100, p={p})...");
         let g: Graph = erdos_renyi_gnp(42, 100, p);
         let lbl = format!("p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -57,7 +60,7 @@ fn bench_density_v200(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnp(V=200, p={p})...");
         let g: Graph = erdos_renyi_gnp(42, 200, p);
         let lbl = format!("p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -85,7 +88,7 @@ fn bench_density_v500(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnp(V=500, p={p})...");
         let g: Graph = erdos_renyi_gnp(42, 500, p);
         let lbl = format!("p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -113,7 +116,7 @@ fn bench_density_v1000(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnp(V=1000, p={p})...");
         let g: Graph = erdos_renyi_gnp(42, 1000, p);
         let lbl = format!("p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -141,7 +144,7 @@ fn bench_density_v2000(c: &mut Criterion) {
         eprintln!("  Generating erdos_renyi_gnp(V=2000, p={p})...");
         let g: Graph = erdos_renyi_gnp(42, 2000, p);
         let lbl = format!("p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();

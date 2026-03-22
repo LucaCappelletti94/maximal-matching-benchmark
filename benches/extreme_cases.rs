@@ -9,7 +9,7 @@ use geometric_traits::{
 
 type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
 
-macro_rules! bench_both {
+macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
         $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
@@ -17,6 +17,9 @@ macro_rules! bench_both {
         });
         $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
             b.iter(|| black_box(g.micali_vazirani()));
+        });
+        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
+            b.iter(|| black_box(g.blum()));
         });
     }};
 }
@@ -56,7 +59,7 @@ fn bench_barbell(c: &mut Criterion) {
         eprintln!("  Generating barbell_graph(k={k}, p={p})...");
         let g: Graph = barbell_graph(k, p);
         let lbl = format!("k{k}_p{p}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -85,7 +88,7 @@ fn bench_hypercube(c: &mut Criterion) {
         eprintln!("  Generating hypercube_graph(d={d}), V={v}...");
         let g: Graph = hypercube_graph(d);
         let lbl = format!("d{d}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -95,7 +98,7 @@ fn bench_star(c: &mut Criterion) {
     eprintln!("[3/7] Running extreme/star benchmarks...");
     let mut group = c.benchmark_group("extreme/star");
 
-    for n in [50usize, 100, 500, 1000, 5000, 10000, 20000] {
+    for n in [50usize, 100, 500, 1000, 2000, 5000, 10000, 20000] {
         if n >= 5000 {
             group
                 .sample_size(10)
@@ -113,7 +116,7 @@ fn bench_star(c: &mut Criterion) {
         eprintln!("  Generating star_graph(V={n})...");
         let g: Graph = star_graph(n);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -123,7 +126,7 @@ fn bench_path(c: &mut Criterion) {
     eprintln!("[4/7] Running extreme/path benchmarks...");
     let mut group = c.benchmark_group("extreme/path");
 
-    for n in [50usize, 100, 500, 1000, 5000, 10000, 20000] {
+    for n in [50usize, 100, 500, 1000, 2000, 5000, 10000, 20000] {
         if n >= 5000 {
             group
                 .sample_size(10)
@@ -141,7 +144,7 @@ fn bench_path(c: &mut Criterion) {
         eprintln!("  Generating path_graph(V={n})...");
         let g: Graph = path_graph(n);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -151,7 +154,7 @@ fn bench_cycle(c: &mut Criterion) {
     eprintln!("[5/7] Running extreme/cycle benchmarks...");
     let mut group = c.benchmark_group("extreme/cycle");
 
-    for n in [50usize, 100, 500, 1000, 5000, 10000, 20000] {
+    for n in [50usize, 100, 500, 1000, 2000, 5000, 10000, 20000] {
         if n >= 5000 {
             group
                 .sample_size(10)
@@ -169,7 +172,7 @@ fn bench_cycle(c: &mut Criterion) {
         eprintln!("  Generating cycle_graph(V={n})...");
         let g: Graph = cycle_graph(n);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -197,7 +200,7 @@ fn bench_crown(c: &mut Criterion) {
         eprintln!("  Generating crown_graph(n={n}), V={}...", 2 * n);
         let g: Graph = crown_graph(n);
         let lbl = graph_label(&g);
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
@@ -233,7 +236,7 @@ fn bench_complete_bipartite(c: &mut Criterion) {
         eprintln!("  Generating complete_bipartite_graph({m}, {n})...");
         let g: Graph = complete_bipartite_graph(m, n);
         let lbl = format!("{m}x{n}_{}", graph_label(&g));
-        bench_both!(group, lbl, g);
+        bench_all!(group, lbl, g);
     }
 
     group.finish();
