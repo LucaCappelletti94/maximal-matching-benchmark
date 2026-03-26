@@ -8,10 +8,18 @@ publish = false
 bench = false
 
 [dependencies]
-geometric-traits = { git = "https://github.com/earth-metabolome-initiative/geometric-traits" }
+geometric-traits = { git = "https://github.com/earth-metabolome-initiative/geometric-traits", rev = "c8ddcb4" }
 
 [dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
+[profile.bench]
+codegen-units = 1
+lto = "thin"
 
 [[bench]]
 name = "scaling_with_size"

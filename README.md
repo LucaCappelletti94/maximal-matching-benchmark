@@ -1,47 +1,114 @@
-# Maximum Matching Benchmark: Blossom vs Micali-Vazirani vs Blum
+# Maximum Matching Benchmark Suite
 
 [![CI](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/LucaCappelletti94/maximal-matching-benchmark)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19164092.svg)](https://doi.org/10.5281/zenodo.19164092)
 
 ## Abstract
 
-We benchmark three general-purpose maximum matching algorithms, Blossom \[1\] (O(V^3)), Micali-Vazirani \[2\] (O(E sqrt(V))), and Blum \[14\] (O(sqrt(V) (V+E) alpha(V+E,V))), plus the specialized bipartite algorithm Hopcroft-Karp \[15\] (O(E sqrt(V))), from the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) crate across 248 graph configurations spanning 32 benchmark groups (764 individual measurements). On small graphs (fewer than 500 vertices), Blossom is consistently 2-8x faster due to lower constant overhead. On large sparse graphs, Micali-Vazirani dominates, reaching up to 172x faster on a 10,000-vertex star graph; Blum consistently places between MV and Blossom, and beats MV on grid and torus topologies at V >= 2,000. On bipartite graphs, Hopcroft-Karp outperforms all three general algorithms by up to 202x on imbalanced structures. The crossover point varies between 75 and 750 vertices depending on topology and edge density: sparse and linear structures (stars, paths, grids) cross over earliest, while dense structured bipartite graphs (crown, complete bipartite) favor Blossom at all tested sizes.
+We implemented and benchmark 13 static, unweighted maximum-cardinality matching algorithms and variants in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: four general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], Micali-Vazirani \[2\], and Blum \[14\], each in base, `KS1`, and `KS12` form, plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. The current versioned benchmark snapshot covers 307 graph configurations across 36 benchmark groups (3,704 algorithm/config measurements). Raw Criterion.rs results (about 36 hours of benchmarks on the documented machine, as of 2026-03-26) are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
+
+Winner breakdown (strict lowest-median, 307 configurations):
+
+| Family | Wins | Typical regime |
+|:--|--:|:--|
+| Gabow 1976 | 184 | Most small-to-medium general graphs |
+| Micali-Vazirani | 84 | Large sparse and windmill-like inputs |
+| Blum | 18 | Some regular sparse topologies |
+| Hopcroft-Karp | 12 | Sparse/imbalanced bipartite inputs |
+| Blossom | 9 | Small dense baseline |
+
+Karp-Sipser preprocessing changes the winner on only 25 of 307 configurations, but can cut star/path runtimes by 2-3 orders of magnitude.
+
+## Table of Contents
+
+- [Decision Guide](#decision-guide)
+- [Visual Summary](#visual-summary)
+- [Algorithms Overview](#algorithms-overview)
+- [What Problems These Algorithms Solve](#what-problems-these-algorithms-solve)
+- [Graph Types](#graph-types)
+- [Headline Results](#headline-results)
+- [Bipartite Matching Comparison](#bipartite-matching-comparison)
+- [Threats to Validity](#threats-to-validity)
+- [Methodology](#methodology)
+- [Reproducing](#reproducing)
+- [References](#references)
+
+## Decision Guide
+
+Scope: **unweighted maximum-cardinality matching on static graphs** only.
+
+1. **Bipartite?** Use Hopcroft-Karp on sparse/imbalanced inputs. On small dense balanced inputs, Gabow 1976 can be faster.
+2. **General graph?** Start with Gabow 1976 (most common winner overall).
+3. **Large and sparse?** Benchmark Micali-Vazirani (dominates stars, paths, cycles, windmills at scale).
+4. **Regular lattice (grids, tori)?** Also try Blum.
+5. **Many degree-1/2 vertices?** Add `KS1` or `KS12` preprocessing (rarely changes the winner, but can cut star/path runtimes by orders of magnitude).
 
 ## Visual Summary
 
 <p align="center">
-  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, MV, and Blum performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
+  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, Gabow 1976, Micali-Vazirani, and Blum performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
 </p>
 
-Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale). Red = Blossom, blue = Micali-Vazirani, green = Blum.
-At V=100, Blossom's red polygon envelops the others on most axes. By V=500 the polygons cross over. At V=1,000 and V=2,000, MV and Blum both dominate Blossom, with Blum tracking close to MV on sparse topologies and beating MV on grids and tori at V=2,000.
+Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale). Red = Blossom, orange = Gabow 1976, blue = Micali-Vazirani, green = Blum.
+At V~100 and V~500, Gabow's orange polygon encloses most axes. By V~1,000, Micali-Vazirani pulls ahead on the sparse axes. At V~2,000, MV dominates most sparse topologies, while Blum remains closest on grids and tori.
+
+Polygons are normalized log-scale within each panel (not comparable across panels).
+
+### Scaling Behavior
+
+<p align="center">
+  <img src="docs/scaling_plot.svg" alt="Log-log plot of time vs vertices for representative star, grid, sparse random, dense complete, and Barabasi-Albert families for Blossom, Gabow 1976, Micali-Vazirani, and Blum" width="100%">
+</p>
+
+On stars, MV separates earliest; on grids, Blum stays closest to MV; dense families compress the gap between all solvers.
+
+### Karp-Sipser Impact
+
+<p align="center">
+  <img src="docs/ks_impact.svg" alt="Radar panels showing KS1 and KS12 preprocessing speedup over each base algorithm across topologies and sizes" width="100%">
+</p>
+
+Blue = `KS1` (degree-1 rule), orange = `KS12` (degree-1+2). Preprocessing usually hurts (red zone) except on tree-like inputs: on the 20,000-vertex star it cuts runtime by 290x for Blossom and 3,358x for Blum. Overall, KS changes the suite winner on only 25 of 307 configurations.
+
+### Bipartite Speedup
+
+<p align="center">
+  <img src="docs/bipartite_speedup.svg" alt="Bar chart showing Hopcroft-Karp speedup over general algorithms on bipartite graphs" width="100%">
+</p>
+
+Gabow 1976 beats HK on small/dense balanced bipartite inputs; HK dominates at larger sizes and on imbalanced inputs (14-30x).
 
 ## Algorithms Overview
 
-**Blossom** (Edmonds, 1965 \[1\]) finds augmenting paths via a tree-growing strategy with "blossom" contraction to handle odd cycles. Time complexity: **O(V^3)**. The constant factor is small, making it fast on small graphs. The correctness of augmenting-path-based matching algorithms rests on Berge's theorem \[3\].
+**Blossom** (Edmonds, 1965 \[1\]) finds augmenting paths via tree-growing with blossom contraction (shrinking odd cycles to preserve augmenting-path structure). The `geometric-traits` implementation uses linear-scan contraction, giving **O(V^2 E)** worst-case time. Fast on small graphs due to low constant overhead. Correctness rests on Berge's theorem \[3\].
 
-**Micali-Vazirani** (1980 \[2\]) constructs a layered BFS graph with bridge detection to find augmenting paths in phases. Time complexity: **O(E sqrt(V))**. The per-call overhead is higher, but the algorithm scales better on sparse graphs. A detailed exposition of the algorithm was given by Vazirani \[4\].
+**Gabow 1976** \[16\] is a more efficient implementation of Edmonds-style blossom matching. It still targets general graphs and carries the same O(V^3) worst-case bound as classical blossom-based methods, but with much smaller constants in practice. In the committed snapshot, plain `Gabow1976` is the single most common winner.
 
-**Blum** (1990 \[14\]) reduces augmenting path search to a reachability problem in a directed bipartite graph, then uses a modified depth-first search to find augmenting paths. Time complexity: **O(sqrt(V) (V+E) alpha(V+E,V))**, where alpha is the inverse Ackermann function. In practice this is effectively O(sqrt(V) (V+E)). Empirically, Blum is faster than Blossom on large graphs and faster than MV on regular sparse topologies (grids, tori) at V >= 2,000.
+**Micali-Vazirani** (1980 \[2\]) finds augmenting paths in phases via layered BFS with bridge detection. Time complexity: **O(E sqrt(V))**. Higher per-call overhead but scales better on sparse graphs. The `geometric-traits` implementation follows Peterson & Loui \[17\], ported from ggawryal/MV-matching (C++). To our knowledge, this is the first Rust implementation of Micali-Vazirani.
+
+**Blum** (1990 \[14\]) reduces augmenting path search to reachability in an auxiliary directed bipartite structure. Paper-level bound: **O(sqrt(V) (V+E))** with Gabow-Tarjan tree-set union, or **O(sqrt(V) (V+E) alpha(V+E,V))** with standard union-find. The `geometric-traits` implementation patches bugs in the published pseudocode (distinct from those reported by Dandeh and Lukovszki \[20\]) and includes fallback paths, so its documented worst case is **O(V (V+E))**. To our knowledge, this is the first public implementation of Blum's algorithm in any language. Empirically competitive on regular sparse topologies (grids, tori) at larger sizes.
 
 **Hopcroft-Karp** (1973 \[15\]) finds maximum cardinality matchings in bipartite graphs using layered BFS to discover shortest augmenting paths in phases. Time complexity: **O(E sqrt(V))**. Because it operates directly on the bipartite adjacency (rows = one partition, columns = the other), it avoids the overhead of general-graph blossom contraction entirely.
 
-| Property | Blossom | Micali-Vazirani | Blum |
-|:--|:--|:--|:--|
-| Time complexity | O(V^3) | O(E sqrt(V)) | O(sqrt(V) (V+E) alpha(V+E,V)) |
-| Graph type | General | General | General |
-| Small graph performance | Fast (low overhead) | Slower (higher constant) | Slower (higher constant) |
-| Large sparse graphs | Cubic in V | Sublinear in V for fixed degree | Between MV and Blossom |
-| Large dense graphs | Cubic in V | Approximately O(V^2.5) | Between MV and Blossom |
-| Best regime | V < 500, any density | V > 500, sparse graphs | V > 500, regular sparse graphs |
+**Karp-Sipser preprocessing** \[18, 19\] is benchmarked as two exact wrappers around each general algorithm. `KS1` greedily matches degree-1 vertices before the main solve; `KS12` also handles degree-2 vertices. Both preserve exact maximum-cardinality matching.
 
-For **bipartite graphs only**, Hopcroft-Karp (O(E sqrt(V))) outperforms all three general algorithms. See the [Bipartite Matching Comparison](#bipartite-matching-comparison) section.
+| Property | Blossom | Gabow 1976 | Micali-Vazirani | Blum |
+|:--|:--|:--|:--|:--|
+| Time complexity | O(V^2 E) | O(V^3) | O(E sqrt(V)) | paper fast path: O(sqrt(V) (V+E)); union-find substitution: O(sqrt(V) (V+E) alpha(V+E,V)); impl worst case: O(V (V+E)) |
+| Graph type | General | General | General | General |
+| Typical role in this suite | Textbook baseline | Most common overall winner | Large sparse specialist | Niche sparse/regular specialist |
+| Small graph performance | Good | Best of the general algorithms on many inputs | Higher constant overhead | Higher constant overhead |
+| Large sparse graphs | O(V^3) when E = O(V) | Better constants, still cubic worst-case | Approximately O(V^1.5) for fixed degree | paper fast path: O(V^1.5); union-find substitution: O(V^1.5 * alpha(V)); documented impl worst case higher |
+| Best regime | Small dense baseline | Small-to-medium general graphs | Large sparse graphs | Some regular sparse graphs and tree-like graphs with KS |
+
+Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations, while `Gabow1976` wins the other 8 smaller or denser balanced cases. See the [Bipartite Matching Comparison](#bipartite-matching-comparison) section.
 
 ## What Problems These Algorithms Solve
 
 A maximum matching is the largest possible set of edges that do not share vertices.
 In plain terms, it answers: **how do I create as many disjoint one-to-one pairs as possible?**
-Both Blossom and Micali-Vazirani solve this problem on **general graphs**, so they work even when
+Blossom, Gabow 1976, Micali-Vazirani, and Blum, plus their Karp-Sipser variants, solve this problem on **general graphs**, so they work even when
 the compatibility graph is not bipartite and contains odd cycles.
 
 | Real-world task | Matching interpretation |
@@ -53,12 +120,7 @@ the compatibility graph is not bipartite and contains odd cycles.
 | Graph coarsening and preprocessing | Matching can be used to merge or pair nearby vertices before partitioning, sparsification, or multilevel graph algorithms. |
 | Resource pairing in fleets, robotics, or sensor systems | Vertices are units; an edge means two units can be paired under distance, compatibility, or safety constraints. |
 
-All four algorithms solve the **same** maximum-matching problem. They differ in where each is the
-better engineering choice: Blossom on smaller or denser graphs, MV and Blum on larger sparse graphs,
-Hopcroft-Karp on bipartite inputs.
-
-If your problem is strictly bipartite, weighted, or preference-based, a different formulation may
-fit better:
+All five algorithm families compute maximum-cardinality matchings; see the [Decision Guide](#decision-guide) for when to use each. If your problem is weighted or preference-based, a different formulation may fit better:
 
 - **Bipartite cardinality matching:** often solved with specialized bipartite algorithms such as Hopcroft-Karp.
 - **Weighted one-to-one assignment:** use maximum-weight matching or Hungarian/min-cost-flow style methods.
@@ -66,7 +128,7 @@ fit better:
 
 ## Graph Types
 
-The benchmarks use the following graph families. All generators are from the `geometric-traits` crate.
+The benchmarks use the following graph families. Most generators are from the `geometric-traits` crate; the sparse random bipartite benchmark in the Hopcroft-Karp comparison uses a small inline seeded generator to build equivalent bipartite and symmetric inputs.
 
 ### Classical Structures
 
@@ -76,6 +138,8 @@ The benchmarks use the following graph families. All generators are from the `ge
 - **Wheel graph** W_n: A cycle of n - 1 vertices with one additional hub vertex connected to all of them. E = 2(V - 1).
 - **Grid graph** (k x k lattice): Vertices arranged in a square grid. Interior vertices have degree 4; boundary vertices have degree 2 or 3. E approximately 2V for large V.
 - **Torus graph**: A grid graph with wrap-around edges on both axes, so every vertex has degree exactly 4. E = 2V.
+- **Hexagonal lattice graph**: A honeycomb-style lattice. Interior vertices have degree 3. The benchmark uses rectangular `rows x cols` slices with boundary effects at small sizes.
+- **Triangular lattice graph**: A triangular tiling. Interior vertices have degree 6. It is denser than the square grid or torus at the same vertex count.
 - **Complete graph** K_n: Every pair of vertices is adjacent. E = V(V - 1)/2.
 - **Petersen graph** \[11\]: The standard 10-vertex, 15-edge 3-regular graph, included as a fixed small-graph baseline.
 
@@ -89,615 +153,141 @@ The benchmarks use the following graph families. All generators are from the `ge
 
 - **Barbell graph** B(k, p): Two complete graphs K_k joined by a path of p intermediate vertices. Combines dense clique regions with a sparse bridge.
 - **Friendship (windmill) graph** F_n \[13\]: n triangles sharing a single vertex. V = 2n + 1, E = 3n. The shared hub has degree 2n; all other vertices have degree 2.
+- **Windmill K4 graph**: n copies of K4 sharing one hub vertex. In the benchmarked `clique_size = 4` case, V = 3n + 1 and E = 6n.
 - **Hypercube graph** Q_d: The d-dimensional hypercube with V = 2^d vertices, each of degree d. E = d * 2^(d-1). Vertex-transitive and d-regular.
 
 ### Random Graph Models
 
-- **Erdos-Renyi** G(n, m) \[5\]: n vertices with m edges placed uniformly at random. Used in the size-scaling and density-scaling benchmarks with varying n and m.
+- **Erdos-Renyi** G(n, m) \[5\]: n vertices with m edges placed uniformly at random. Used in the size-scaling benchmarks with varying n and m.
+- **Erdos-Renyi** G(n, p) \[5\]: each possible edge appears independently with probability p. Used in the density-scaling benchmarks and the fixed-size topology snapshots.
 - **Barabasi-Albert** BA(n, m) \[6\]: Preferential attachment model producing scale-free power-law degree distributions. Starting from a small clique, each new vertex attaches to m existing vertices with probability proportional to their current degree.
 - **Watts-Strogatz** WS(n, k, beta) \[7\]: Small-world model. Starts from a k-regular ring lattice and rewires each edge with probability beta, producing short average path lengths and high clustering.
 - **Stochastic Block Model** SBM \[8\]: Vertices are partitioned into communities. Edges within a community appear with probability p_in; edges between communities appear with probability p_out (p_in >> p_out).
 - **Random Geometric Graph** RGG(n, r) \[9\]: n points placed uniformly in the unit square; edges connect pairs within Euclidean distance r. Produces spatially clustered graphs.
 - **Random Regular Graph** RR(n, k) \[10\]: A graph chosen uniformly at random from all k-regular graphs on n vertices.
+- **Random Bipartite** G(n, n, p approx 6/n): seeded bipartite generator used in `bipartite/random`, with about six neighbors per left-partition vertex on average.
 
 ## Headline Results
 
-The 12 largest speedup ratios observed across all 764 measurements:
-
-| Graph | \|V\| | \|E\| | Blossom | MV | Winner | Speedup |
-|:--|--:|--:|--:|--:|:--|--:|
-| Star | 10,000 | 9,999 | 137 ms | **799 µs** | MV | **171.9x** |
-| Star | 20,000 | 19,999 | 551 ms | **4.52 ms** | MV | **122.0x** |
-| Star | 5,000 | 4,999 | 34.5 ms | **404 µs** | MV | **85.3x** |
-| Friendship | 499 | 747 | 9.47 ms | **142 µs** | MV | **66.2x** |
-| Cycle | 10,000 | 10,000 | 69.5 ms | **1.41 ms** | MV | **49.2x** |
-| Path | 20,000 | 19,999 | 275 ms | **5.74 ms** | MV | **48.0x** |
-| Grid | 10,000 | 19,800 | 67.3 ms | **1.44 ms** | MV | **46.8x** |
-| Hypercube d14 | 16,384 | 114,688 | 184 ms | **11.2 ms** | MV | **16.5x** |
-| Sparse d6 | 10,000 | 30,000 | 125 ms | **11.0 ms** | MV | **11.3x** |
-| Crown | 50 | 600 | **3.57 µs** | 33.7 µs | Blossom | **9.4x** |
-| Comp. Bipartite | 20 | 100 | **812 ns** | 6.89 µs | Blossom | **8.5x** |
-| Crown | 150 | 5,550 | **27.9 µs** | 233 µs | Blossom | **8.4x** |
-
-
-## Size Scaling
-
-Performance as graph size increases at fixed density levels.
-
-### Sparse Random Graphs (d ~ 6)
-
-Erdos-Renyi G(n, 3n), average degree approximately 6.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 10 | 30 | **497 ns** | 3.82 µs | Blossom | 7.7x |
-| 20 | 60 | **1.10 µs** | 8.59 µs | Blossom | 7.8x |
-| 50 | 150 | **3.00 µs** | 15.6 µs | Blossom | 5.2x |
-| 100 | 300 | **14.7 µs** | 38.8 µs | Blossom | 2.6x |
-| 200 | 600 | **55.2 µs** | 143 µs | Blossom | 2.6x |
-| 500 | 1,500 | **251 µs** | 296 µs | Blossom | 1.2x |
-| 1,000 | 3,000 | 861 µs | **575 µs** | MV | 1.5x |
-| 2,000 | 6,000 | 3.00 ms | **1.27 ms** | MV | 2.4x |
-| 3,000 | 9,000 | 10.1 ms | **2.97 ms** | MV | 3.4x |
-| 5,000 | 15,000 | 21.1 ms | **4.04 ms** | MV | 5.2x |
-| 7,500 | 22,500 | 48.9 ms | **6.71 ms** | MV | 7.3x |
-| 10,000 | 30,000 | 125 ms | **11.0 ms** | MV | **11.3x** |
-
-Crossover at approximately 750 vertices.
-
-### Medium Random Graphs (d ~ 20)
-
-Erdos-Renyi G(n, 10n), average degree approximately 20.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 20 | 190 | **1.94 µs** | 9.25 µs | Blossom | 4.8x |
-| 50 | 500 | **7.46 µs** | 28.7 µs | Blossom | 3.9x |
-| 100 | 1,000 | **15.5 µs** | 62.8 µs | Blossom | 4.1x |
-| 200 | 2,000 | **52.1 µs** | 125 µs | Blossom | 2.4x |
-| 500 | 5,000 | **242 µs** | 382 µs | Blossom | 1.6x |
-| 1,000 | 10,000 | 904 µs | **781 µs** | MV | 1.2x |
-| 2,000 | 20,000 | 3.93 ms | **1.57 ms** | MV | 2.5x |
-| 3,000 | 30,000 | 9.63 ms | **3.34 ms** | MV | 2.9x |
-
-Crossover at approximately 750 vertices. Higher density slows the growth of MV's advantage relative to sparse graphs.
-
-### Dense Random Graphs (E = V^2/4)
-
-Erdos-Renyi G(n, n^2/4), approximately 50% edge probability.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 20 | 100 | **1.11 µs** | 8.32 µs | Blossom | 7.5x |
-| 50 | 625 | **7.40 µs** | 25.5 µs | Blossom | 3.4x |
-| 100 | 2,500 | **37.1 µs** | 90.2 µs | Blossom | 2.4x |
-| 200 | 10,000 | **222 µs** | 302 µs | Blossom | 1.4x |
-| 500 | 62,500 | **2.75 ms** | 3.55 ms | Blossom | 1.3x |
-| 750 | 140,625 | 8.43 ms | **6.30 ms** | MV | 1.3x |
-| 1,000 | 250,000 | 19.4 ms | **13.8 ms** | MV | 1.4x |
-
-Crossover at approximately 600 vertices. Even at V=1,000 the gap is only 1.4x, since E grows as V^2 and O(E sqrt(V)) approaches O(V^2.5), narrowing the difference with O(V^3).
-
-### Complete Graphs
-
-K_n (maximum possible density).
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 10 | 45 | **600 ns** | 3.30 µs | Blossom | 5.5x |
-| 20 | 190 | **1.96 µs** | 9.21 µs | Blossom | 4.7x |
-| 50 | 1,225 | **18.6 µs** | 39.2 µs | Blossom | 2.1x |
-| 100 | 4,950 | **107 µs** | 135 µs | Blossom | 1.3x |
-| 200 | 19,900 | 705 µs | **491 µs** | MV | 1.4x |
-| 300 | 44,850 | 2.20 ms | **1.08 ms** | MV | 2.0x |
-| 400 | 79,800 | 5.00 ms | **1.83 ms** | MV | 2.7x |
-| 500 | 124,750 | 9.51 ms | **2.74 ms** | MV | 3.5x |
-
-Crossover at approximately 150 vertices. MV reaches 3.5x at V=500; the O(V^3) vs O(V^2.5) gap grows slowly on dense graphs.
-
-### Grid Graphs
-
-k x k lattice, each interior vertex having degree 4.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 9 | 12 | **381 ns** | 2.12 µs | Blossom | 5.5x |
-| 25 | 40 | **1.02 µs** | 5.65 µs | Blossom | 5.5x |
-| 49 | 84 | **3.40 µs** | 11.8 µs | Blossom | 3.5x |
-| 100 | 180 | **8.01 µs** | 16.7 µs | Blossom | 2.1x |
-| 225 | 420 | **37.4 µs** | 45.4 µs | Blossom | 1.2x |
-| 484 | 924 | 158 µs | **75.8 µs** | MV | 2.1x |
-| 1,024 | 1,984 | 719 µs | **157 µs** | MV | 4.6x |
-| 2,025 | 3,960 | 2.72 ms | **428 µs** | MV | 6.4x |
-| 3,025 | 5,940 | 6.36 ms | **635 µs** | MV | **10.0x** |
-| 4,900 | 9,660 | 15.7 ms | **749 µs** | MV | **21.0x** |
-| 10,000 | 19,800 | 67.3 ms | **1.44 ms** | MV | **46.8x** |
-
-Crossover at approximately 350 vertices. Constant degree means E = O(V), so O(E sqrt(V)) = O(V^1.5) versus Blossom's O(V^3). The 46.8x gap at V=10,000 is the largest observed among regular graph families.
-
-## Density Scaling
-
-How varying edge density affects relative performance at fixed vertex counts.
-
-### V = 100
-
-| Probability | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 0.02 | 80 | **9.79 µs** | 22.7 µs | Blossom | 2.3x |
-| 0.05 | 227 | **13.8 µs** | 64.2 µs | Blossom | 4.7x |
-| 0.10 | 465 | **11.3 µs** | 50.8 µs | Blossom | 4.5x |
-| 0.20 | 956 | **15.7 µs** | 57.7 µs | Blossom | 3.7x |
-| 0.30 | 1,472 | **20.5 µs** | 56.6 µs | Blossom | 2.8x |
-| 0.50 | 2,496 | **43.2 µs** | 110 µs | Blossom | 2.5x |
-| 0.70 | 3,478 | **72.6 µs** | 148 µs | Blossom | 2.0x |
-| 0.90 | 4,477 | **104 µs** | 136 µs | Blossom | 1.3x |
-
-At V=100, Blossom wins at all densities. The advantage peaks around p=0.05 (4.7x) and narrows to 1.3x at p=0.9.
-
-### V = 200
-
-| Probability | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 0.02 | 367 | **36.2 µs** | 122 µs | Blossom | 3.4x |
-| 0.05 | 956 | **52.2 µs** | 92.2 µs | Blossom | 1.8x |
-| 0.10 | 2,002 | **61.4 µs** | 129 µs | Blossom | 2.1x |
-| 0.20 | 4,009 | **75.6 µs** | 204 µs | Blossom | 2.7x |
-| 0.30 | 5,996 | **138 µs** | 251 µs | Blossom | 1.8x |
-| 0.50 | 9,967 | **261 µs** | 377 µs | Blossom | 1.4x |
-| 0.70 | 13,966 | **466 µs** | 520 µs | Blossom | 1.1x |
-| 0.90 | 17,913 | **687 µs** | 706 µs | Blossom | 1.0x |
-
-At V=200, Blossom wins at all densities, though the margin at p=0.9 is negligible (1.03x).
-
-### V = 500
-
-| Probability | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 0.01 | 1,234 | **260 µs** | 407 µs | Blossom | 1.6x |
-| 0.02 | 2,520 | **240 µs** | 289 µs | Blossom | 1.2x |
-| 0.05 | 6,246 | **270 µs** | 452 µs | Blossom | 1.7x |
-| 0.10 | 12,524 | **423 µs** | 566 µs | Blossom | 1.3x |
-| 0.20 | 25,129 | **760 µs** | 1.54 ms | Blossom | 2.0x |
-| 0.30 | 37,569 | **1.33 ms** | 2.69 ms | Blossom | 2.0x |
-| 0.50 | 62,592 | **3.30 ms** | 3.61 ms | Blossom | 1.1x |
-
-At V=500, Blossom wins at all tested densities, with the advantage peaking at medium densities (p=0.2-0.3).
-
-### V = 1,000
-
-| Probability | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 0.005 | 2,526 | 971 µs | **587 µs** | MV | 1.7x |
-| 0.01 | 5,045 | 911 µs | **548 µs** | MV | 1.7x |
-| 0.02 | 10,027 | 994 µs | **721 µs** | MV | 1.4x |
-| 0.05 | 25,164 | **1.07 ms** | 1.46 ms | Blossom | 1.4x |
-| 0.10 | 50,110 | **1.82 ms** | 3.38 ms | Blossom | 1.9x |
-| 0.20 | 100,312 | **4.74 ms** | 6.21 ms | Blossom | 1.3x |
-
-At V=1,000, the density crossover is visible: MV wins at low density (p <= 0.02) and Blossom wins at high density (p >= 0.05).
-
-### V = 2,000
-
-| Probability | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 0.005 | 10,034 | 4.14 ms | **1.22 ms** | MV | **3.4x** |
-| 0.01 | 20,166 | 3.21 ms | **1.70 ms** | MV | 1.9x |
-| 0.02 | 40,119 | 3.71 ms | **2.06 ms** | MV | 1.8x |
-| 0.05 | 100,396 | **5.39 ms** | 6.47 ms | Blossom | 1.2x |
-| 0.10 | 200,649 | **11.1 ms** | 12.2 ms | Blossom | 1.1x |
-
-At V=2,000, MV wins by 3.4x at p=0.005, while Blossom retains a narrow lead at higher densities. The density crossover shifts toward higher p values as V increases.
-
-## Topology Comparison
-
-All graph types at a fixed vertex count, sorted by MV speedup ratio.
-
-### V ~ 100
-
-| Topology | \|V\| | \|E\| | Blossom | MV | Blum | Winner | Speedup |
-|:--|--:|--:|--:|--:|--:|:--|--:|
-| Petersen | 10 | 15 | **396 ns** | 2.05 µs | 2.12 µs | Blossom | 5.2x |
-| Crown | 100 | 2,450 | **13.0 µs** | 83.4 µs | 73.8 µs | Blossom | 5.7x |
-| Comp. Bipartite | 100 | 2,500 | **16.1 µs** | 81.6 µs | 71.0 µs | Blossom | 4.4x |
-| Erdos-Renyi | 100 | 465 | **11.5 µs** | 49.1 µs | 43.3 µs | Blossom | 3.8x |
-| Watts-Strogatz | 100 | 300 | **11.0 µs** | 30.2 µs | 33.4 µs | Blossom | 2.8x |
-| Barabasi-Albert | 100 | 294 | **18.1 µs** | 41.9 µs | 56.2 µs | Blossom | 2.3x |
-| Torus | 100 | 200 | **8.40 µs** | 17.8 µs | 19.0 µs | Blossom | 2.1x |
-| Grid | 100 | 180 | **8.35 µs** | 17.4 µs | 18.5 µs | Blossom | 2.1x |
-| Wheel | 100 | 198 | **8.36 µs** | 17.5 µs | 19.2 µs | Blossom | 2.1x |
-| Turan | 100 | 4,000 | **88.4 µs** | 191 µs | 179 µs | Blossom | 2.0x |
-| Path | 100 | 99 | **8.21 µs** | 15.4 µs | 17.5 µs | Blossom | 1.9x |
-| Cycle | 100 | 100 | **11.4 µs** | 15.4 µs | 17.7 µs | Blossom | 1.4x |
-| Complete | 100 | 4,950 | **108 µs** | 140 µs | 122 µs | Blossom | 1.1x |
-| Star | 100 | 99 | 15.0 µs | **10.5 µs** | 16.2 µs | MV | 1.4x |
-| Friendship | 99 | 147 | 110 µs | 31.5 µs | **21.4 µs** | Blum | 5.1x |
-
-At V~100, Blossom wins on 13 of 15 topologies. Blum wins on friendship graphs (windmill structure favors its DFS approach), and MV wins on stars.
-
-### V ~ 500
-
-| Topology | \|V\| | \|E\| | Blossom | MV | Blum | Winner | Speedup |
-|:--|--:|--:|--:|--:|--:|:--|--:|
-| Erdos-Renyi | 500 | 2,520 | **238 µs** | 273 µs | 369 µs | Blossom | 1.1x |
-| Barbell | 110 | 2,461 | **67.4 µs** | 86.1 µs | 80.4 µs | Blossom | 1.2x |
-| Barabasi-Albert | 500 | 1,494 | **343 µs** | 312 µs | 743 µs | MV | 1.1x |
-| Watts-Strogatz | 500 | 1,500 | 215 µs | **131 µs** | 195 µs | MV | 1.5x |
-| Grid | 506 | 967 | 181 µs | 81.5 µs | **85.8 µs** | MV | 2.1x |
-| Torus | 506 | 1,012 | 180 µs | 82.0 µs | **86.0 µs** | MV | 2.1x |
-| Wheel | 500 | 998 | 178 µs | **80.7 µs** | 87.7 µs | MV | 2.1x |
-| Cycle | 500 | 500 | 174 µs | **71.1 µs** | 80.2 µs | MV | 2.3x |
-| Path | 500 | 499 | 175 µs | **70.3 µs** | 80.4 µs | MV | 2.4x |
-| Crown | 500 | 62,250 | **301 µs** | 2.83 ms | 1.25 ms | Blossom | 4.2x |
-| Comp. Bipartite | 500 | 62,500 | **303 µs** | 1.56 ms | 1.25 ms | Blossom | 4.1x |
-| Star | 500 | 499 | 346 µs | **44.7 µs** | 73.9 µs | MV | 7.8x |
-| Friendship | 499 | 747 | 9.65 ms | 149 µs | **103 µs** | Blum | **93.7x** |
-
-At V~500, MV wins on 7 of 13 topologies, Blossom on 4, and Blum on 1 (friendship). The friendship graph is a pathological case for Blossom (93.7x slower than Blum). Crown and complete bipartite strongly favor Blossom at this size.
-
-### V ~ 1,000
-
-| Topology | \|V\| | \|E\| | Blossom | MV | Blum | Winner | Speedup |
-|:--|--:|--:|--:|--:|--:|:--|--:|
-| Barabasi-Albert | 1,000 | 2,994 | **987 µs** | 1.05 ms | 2.42 ms | Blossom | 1.1x |
-| Erdos-Renyi | 1,000 | 5,045 | 915 µs | **537 µs** | 787 µs | MV | 1.7x |
-| Watts-Strogatz | 1,000 | 3,000 | 842 µs | **288 µs** | 832 µs | MV | 2.9x |
-| Torus | 1,024 | 2,048 | 734 µs | 166 µs | **174 µs** | MV | 4.2x |
-| Grid | 1,024 | 1,984 | 726 µs | 158 µs | **177 µs** | MV | 4.1x |
-| Wheel | 1,000 | 1,998 | 693 µs | **161 µs** | 173 µs | MV | 4.0x |
-| Cycle | 1,000 | 1,000 | 694 µs | **138 µs** | 157 µs | MV | 4.4x |
-| Path | 1,000 | 999 | 692 µs | **139 µs** | 159 µs | MV | 4.4x |
-| Crown | 1,000 | 249,500 | **1.20 ms** | 13.0 ms | 4.84 ms | Blossom | 4.0x |
-| Comp. Bipartite | 1,000 | 250,000 | **1.29 ms** | 6.09 ms | 4.86 ms | Blossom | 3.8x |
-| Star | 1,000 | 999 | 1.37 ms | **87.0 µs** | 145 µs | MV | **15.8x** |
-
-At V~1,000, MV wins on 7 of 11 topologies, Blossom on 3 (BA, crown, complete bipartite). Blum is between MV and Blossom on most sparse topologies.
-
-### V ~ 2,000
-
-| Topology | \|V\| | \|E\| | Blossom | MV | Blum | Winner | Speedup |
-|:--|--:|--:|--:|--:|--:|:--|--:|
-| Barabasi-Albert | 2,000 | 5,994 | 3.75 ms | **1.94 ms** | 5.41 ms | MV | 1.9x |
-| Erdos-Renyi | 2,000 | 10,034 | 4.04 ms | **1.17 ms** | 2.72 ms | MV | 3.5x |
-| Watts-Strogatz | 2,000 | 6,000 | 3.29 ms | **624 µs** | 1.71 ms | MV | 5.3x |
-| Grid | 2,025 | 3,960 | 2.94 ms | 430 µs | **365 µs** | Blum | 8.0x |
-| Torus | 2,025 | 4,050 | 3.71 ms | 729 µs | **421 µs** | Blum | 8.8x |
-| Wheel | 2,000 | 3,998 | 2.82 ms | **313 µs** | 347 µs | MV | 9.0x |
-| Path | 2,000 | 1,999 | 2.85 ms | **279 µs** | 312 µs | MV | 10.2x |
-| Cycle | 2,000 | 2,000 | 2.74 ms | **281 µs** | 313 µs | MV | 9.8x |
-| Crown | 2,000 | 999,000 | **5.04 ms** | 70.5 ms | 46.5 ms | Blossom | 9.2x |
-| Comp. Bipartite | 2,000 | 1,000,000 | **5.06 ms** | 73.8 ms | 56.0 ms | Blossom | 11.1x |
-| Star | 2,000 | 1,999 | 5.47 ms | **170 µs** | 282 µs | MV | **32.2x** |
-
-At V~2,000, MV wins on 6 of 11 topologies, Blum wins on grid and torus (where its regular structure helps), and Blossom wins on crown and complete bipartite. Blum first outperforms MV at this scale, specifically on regular degree-4 graphs.
-
-## Real-World Graph Models
-
-Performance on graph models commonly used in network science.
-
-### Barabasi-Albert (m = 2)
-
-Scale-free power-law graph, approximately 4 edges per vertex.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 97 | **4.08 µs** | 14.0 µs | Blossom | 3.4x |
-| 100 | 197 | **11.7 µs** | 34.1 µs | Blossom | 2.9x |
-| 200 | 397 | **40.1 µs** | 72.6 µs | Blossom | 1.8x |
-| 500 | 997 | **215 µs** | 220 µs | Blossom | 1.0x |
-| 1,000 | 1,997 | 833 µs | **566 µs** | MV | 1.5x |
-| 2,000 | 3,997 | 3.51 ms | **1.32 ms** | MV | 2.7x |
-| 5,000 | 9,997 | 21.0 ms | **3.86 ms** | MV | **5.4x** |
-
-Crossover at approximately 500 vertices.
-
-### Barabasi-Albert (m = 5)
-
-Denser scale-free graph, approximately 10 edges per vertex.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 235 | **6.42 µs** | 23.5 µs | Blossom | 3.7x |
-| 100 | 485 | **19.5 µs** | 50.5 µs | Blossom | 2.6x |
-| 200 | 985 | **57.2 µs** | 101 µs | Blossom | 1.8x |
-| 500 | 2,485 | **319 µs** | 324 µs | Blossom | 1.0x |
-| 1,000 | 4,985 | 1.21 ms | **659 µs** | MV | 1.8x |
-| 2,000 | 9,985 | 4.18 ms | **1.62 ms** | MV | 2.6x |
-| 5,000 | 24,985 | 23.5 ms | **4.73 ms** | MV | **5.0x** |
-
-Crossover at approximately 500 vertices. Higher m slightly delays the crossover relative to m=2.
-
-### Watts-Strogatz (k = 6, beta = 0.3)
-
-Small-world network, 6 edges per vertex.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 150 | **3.66 µs** | 14.3 µs | Blossom | 3.9x |
-| 100 | 300 | **10.4 µs** | 30.6 µs | Blossom | 2.9x |
-| 200 | 600 | **38.2 µs** | 56.2 µs | Blossom | 1.5x |
-| 500 | 1,500 | 211 µs | **133 µs** | MV | 1.6x |
-| 1,000 | 3,000 | 867 µs | **301 µs** | MV | 2.9x |
-| 2,000 | 6,000 | 3.39 ms | **656 µs** | MV | 5.2x |
-| 5,000 | 15,000 | 20.6 ms | **1.90 ms** | MV | **10.8x** |
-
-Crossover at approximately 350 vertices. The low effective diameter of small-world graphs benefits MV's BFS-based phases.
-
-### Watts-Strogatz (k = 10, beta = 0.5)
-
-Denser small-world network, 10 edges per vertex.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 250 | **4.51 µs** | 18.4 µs | Blossom | 4.1x |
-| 100 | 500 | **11.0 µs** | 34.6 µs | Blossom | 3.1x |
-| 200 | 1,000 | **39.3 µs** | 90.5 µs | Blossom | 2.3x |
-| 500 | 2,500 | **203 µs** | 213 µs | Blossom | 1.0x |
-| 1,000 | 5,000 | 803 µs | **384 µs** | MV | 2.1x |
-| 2,000 | 10,000 | 3.20 ms | **791 µs** | MV | 4.0x |
-| 5,000 | 25,000 | 20.7 ms | **2.33 ms** | MV | **8.9x** |
-
-Crossover at approximately 500 vertices.
-
-### Stochastic Block Model
-
-Two communities (n/2 each), p_in = 0.3, p_out = 0.01.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 176 | **4.90 µs** | 15.8 µs | Blossom | 3.2x |
-| 100 | 726 | **13.4 µs** | 41.8 µs | Blossom | 3.1x |
-| 200 | 3,068 | **64.5 µs** | 151 µs | Blossom | 2.3x |
-| 500 | 19,431 | **652 µs** | 751 µs | Blossom | 1.2x |
-| 1,000 | 76,893 | 4.26 ms | **2.56 ms** | MV | 1.7x |
-| 2,000 | 309,322 | 29.4 ms | **10.5 ms** | MV | 2.8x |
-
-Crossover at approximately 750 vertices. The high intra-cluster density (p=0.3) keeps E/V high, delaying the crossover.
-
-### Random Geometric Graph
-
-Vertices placed uniformly in a unit square; edges connect pairs within radius r, calibrated for average degree approximately 6.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 127 | **5.37 µs** | 28.7 µs | Blossom | 5.3x |
-| 100 | 268 | **19.2 µs** | 61.7 µs | Blossom | 3.2x |
-| 200 | 602 | **81.6 µs** | 200 µs | Blossom | 2.5x |
-| 500 | 1,451 | **309 µs** | 478 µs | Blossom | 1.5x |
-| 1,000 | 3,013 | 1.36 ms | **1.26 ms** | MV | 1.1x |
-| 2,000 | 5,874 | 6.32 ms | **3.23 ms** | MV | 2.0x |
-| 5,000 | 14,949 | 36.8 ms | **9.33 ms** | MV | **3.9x** |
-
-Crossover at approximately 750 vertices. Spatial clustering in the edge structure appears to benefit Blossom relative to other sparse models at the same average degree.
-
-### Random Regular (k = 4)
-
-Every vertex has exactly degree 4.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 100 | **3.24 µs** | 17.2 µs | Blossom | 5.3x |
-| 100 | 200 | **10.8 µs** | 33.9 µs | Blossom | 3.1x |
-| 200 | 400 | **30.6 µs** | 70.5 µs | Blossom | 2.3x |
-| 500 | 1,000 | 240 µs | **169 µs** | MV | 1.4x |
-| 1,000 | 2,000 | 841 µs | **403 µs** | MV | 2.1x |
-| 2,000 | 4,000 | 3.24 ms | **867 µs** | MV | 3.7x |
-| 5,000 | 10,000 | 21.4 ms | **2.33 ms** | MV | **9.2x** |
-
-Crossover at approximately 350 vertices. The profile closely matches grid graphs: constant-degree graphs yield E = O(V), making O(E sqrt(V)) = O(V^1.5).
-
-## Extreme and Pathological Cases
-
-### Star Graphs
-
-One central hub connected to all other vertices (E = V - 1). This topology produces the largest observed MV advantage.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 49 | **4.00 µs** | 5.86 µs | Blossom | 1.5x |
-| 100 | 99 | 14.7 µs | **10.5 µs** | MV | 1.4x |
-| 500 | 499 | 340 µs | **45.7 µs** | MV | **7.4x** |
-| 1,000 | 999 | 1.36 ms | **85.7 µs** | MV | **15.9x** |
-| 2,000 | 1,999 | 5.50 ms | **172 µs** | MV | **32.0x** |
-| 5,000 | 4,999 | 34.5 ms | **404 µs** | MV | **85.3x** |
-| 10,000 | 9,999 | 137 ms | **799 µs** | MV | **171.9x** |
-| 20,000 | 19,999 | 551 ms | **4.52 ms** | MV | **122.0x** |
-
-Peak speedup occurs at V=10,000 (171.9x). With E = V - 1, each augmenting path traverses the hub, and Blossom's O(V^3) behavior is fully realized. MV's BFS phases complete in O(V) time.
-
-The ratio decreases from 171.9x at V=10,000 to 122.0x at V=20,000, likely due to increased cache pressure in MV at larger working set sizes.
-
-### Path Graphs
-
-Linear chain of vertices (E = V - 1).
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 49 | **3.89 µs** | 8.70 µs | Blossom | 2.2x |
-| 100 | 99 | **7.72 µs** | 16.5 µs | Blossom | 2.1x |
-| 500 | 499 | 171 µs | **75.6 µs** | MV | 2.3x |
-| 1,000 | 999 | 679 µs | **150 µs** | MV | 4.5x |
-| 2,000 | 1,999 | 2.69 ms | **290 µs** | MV | 9.3x |
-| 5,000 | 4,999 | 17.3 ms | **706 µs** | MV | **24.5x** |
-| 10,000 | 9,999 | 68.9 ms | **1.42 ms** | MV | **48.4x** |
-| 20,000 | 19,999 | 275 ms | **5.74 ms** | MV | **48.0x** |
-
-Crossover at approximately 250 vertices. The profile is nearly identical to cycle graphs.
-
-### Cycle Graphs
-
-Ring of vertices (E = V).
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 50 | 50 | **2.27 µs** | 8.96 µs | Blossom | 3.9x |
-| 100 | 100 | **7.75 µs** | 17.0 µs | Blossom | 2.2x |
-| 500 | 500 | 171 µs | **77.2 µs** | MV | 2.2x |
-| 1,000 | 1,000 | 684 µs | **151 µs** | MV | 4.5x |
-| 2,000 | 2,000 | 2.68 ms | **273 µs** | MV | 9.8x |
-| 5,000 | 5,000 | 17.2 ms | **696 µs** | MV | **24.7x** |
-| 10,000 | 10,000 | 69.5 ms | **1.41 ms** | MV | **49.2x** |
-| 20,000 | 20,000 | 277 ms | **5.75 ms** | MV | **48.2x** |
-
-Crossover at approximately 250 vertices. The ratio plateaus around 48x between V=10,000 and V=20,000, suggesting both algorithms encounter similar memory-hierarchy effects at this scale.
-
-### Hypercube Graphs
-
-d-dimensional hypercube: V = 2^d, each vertex has degree d.
-
-| Dimension | Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|--:|:--|--:|
-| 4 | 16 | 32 | **480 ns** | 3.25 µs | Blossom | 6.8x |
-| 6 | 64 | 192 | **3.76 µs** | 14.9 µs | Blossom | 4.0x |
-| 8 | 256 | 1,024 | **47.6 µs** | 61.3 µs | Blossom | 1.3x |
-| 10 | 1,024 | 5,120 | 720 µs | **321 µs** | MV | 2.2x |
-| 12 | 4,096 | 24,576 | 11.6 ms | **2.54 ms** | MV | 4.6x |
-| 14 | 16,384 | 114,688 | 184 ms | **11.2 ms** | MV | **16.5x** |
-
-Crossover between d=8 (V=256) and d=10 (V=1,024). Degree grows as log(V), so hypercubes remain relatively sparse at large V.
-
-### Barbell Graphs
-
-Two complete graphs K_k connected by a path of length p.
-
-| Config | Vertices | Edges | Blossom | MV | Winner | Speedup |
-|:--|--:|--:|--:|--:|:--|--:|
-| k=10, p=0 | 20 | 91 | **1.20 µs** | 6.14 µs | Blossom | 5.1x |
-| k=20, p=0 | 40 | 381 | **5.74 µs** | 17.7 µs | Blossom | 3.1x |
-| k=20, p=20 | 60 | 401 | **8.50 µs** | 20.2 µs | Blossom | 2.4x |
-| k=10, p=50 | 70 | 141 | **5.53 µs** | 14.1 µs | Blossom | 2.6x |
-| k=50, p=0 | 100 | 2,451 | **57.2 µs** | 78.8 µs | Blossom | 1.4x |
-| k=50, p=10 | 110 | 2,461 | **62.7 µs** | 85.8 µs | Blossom | 1.4x |
-| k=100, p=0 | 200 | 9,901 | 365 µs | **276 µs** | MV | 1.3x |
-
-Crossover at approximately 150 vertices. The dense clique components favor Blossom at small sizes.
-
-### Crown Graphs
-
-Crown graph C_n: complete bipartite K_{n,n} minus a perfect matching. Blossom wins at all tested sizes.
-
-| Vertices | Edges | Blossom | MV | Winner | Speedup |
-|--:|--:|--:|--:|:--|--:|
-| 20 | 90 | **781 ns** | 6.53 µs | Blossom | 8.4x |
-| 50 | 600 | **3.57 µs** | 33.7 µs | Blossom | **9.4x** |
-| 100 | 2,450 | **12.8 µs** | 83.1 µs | Blossom | 6.5x |
-| 150 | 5,550 | **27.9 µs** | 233 µs | Blossom | 8.4x |
-| 200 | 9,900 | **55.7 µs** | 335 µs | Blossom | 6.0x |
-| 300 | 22,350 | **124 µs** | 723 µs | Blossom | 5.8x |
-| 400 | 39,800 | **220 µs** | 1.01 ms | Blossom | 4.6x |
-
-Blossom wins at every tested size by 4.6-9.4x. Crown graphs (K_{n,n} with one perfect matching removed) have a structure that Blossom handles efficiently. The advantage narrows with increasing V but remains substantial at V=400.
-
-### Complete Bipartite Graphs
-
-K_{m,n} with varying balance.
-
-| Config | Vertices | Edges | Blossom | MV | Winner | Speedup |
-|:--|--:|--:|--:|--:|:--|--:|
-| 10 x 10 | 20 | 100 | **812 ns** | 6.89 µs | Blossom | 8.5x |
-| 25 x 25 | 50 | 625 | **3.52 µs** | 26.5 µs | Blossom | 7.5x |
-| 50 x 50 | 100 | 2,500 | **12.8 µs** | 80.5 µs | Blossom | 6.3x |
-| 10 x 100 | 110 | 1,000 | **39.9 µs** | 49.0 µs | Blossom | 1.2x |
-| 100 x 100 | 200 | 10,000 | **48.3 µs** | 289 µs | Blossom | 6.0x |
-| 50 x 200 | 250 | 10,000 | 881 µs | **369 µs** | MV | 2.4x |
-
-Balanced complete bipartite graphs (N x N) favor Blossom by 6-8.5x. Asymmetric configurations reduce the gap; the 50x200 case is the only MV win.
+The 12 largest **winner-vs-runner-up** speedup ratios across the full 307-configuration suite, using the versioned `median_ns` snapshot archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+
+| Family | Config | \|V\| | \|E\| | Winner | Runner-up | Winner Time | Runner-up Time | Speedup |
+|:--|:--|--:|--:|:--|:--|--:|--:|--:|
+| Imbalanced Bipartite | `50x500_V550_E25000` | 550 | 25000 | HopcroftKarp | MicaliVazirani | **26.53 µs** | 794.18 µs | **29.9x** |
+| Imbalanced Bipartite | `100x1000_V1100_E100000` | 1100 | 100000 | HopcroftKarp | MicaliVazirani | **97.77 µs** | 2.87 ms | **29.4x** |
+| Imbalanced Bipartite | `20x200_V220_E4000` | 220 | 4000 | HopcroftKarp | Gabow1976 | **5.10 µs** | 126.63 µs | **24.9x** |
+| Imbalanced Bipartite | `10x100_V110_E1000` | 110 | 1000 | HopcroftKarp | Gabow1976 | **1.49 µs** | 20.75 µs | **14.0x** |
+| Cycle | `cycle_V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.51 µs** | 8.64 µs | **3.4x** |
+| Hexagonal Lattice | `hexagonal_lattice_V96_E131` | 96 | 131 | Gabow1976 | Blossom | **2.39 µs** | 8.21 µs | **3.4x** |
+| Torus | `torus_V100_E200` | 100 | 200 | Gabow1976 | Blossom | **2.64 µs** | 8.89 µs | **3.4x** |
+| Grid | `grid_V100_E180` | 100 | 180 | Gabow1976 | Blossom | **2.63 µs** | 8.84 µs | **3.4x** |
+| Extreme Hypercube | `d8_V256_E1024` | 256 | 1024 | Gabow1976 | Blossom | **13.27 µs** | 43.85 µs | **3.3x** |
+| Wheel | `wheel_V100_E198` | 100 | 198 | Gabow1976 | Blossom | **2.72 µs** | 8.92 µs | **3.3x** |
+| Extreme Cycle | `V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.39 µs** | 7.69 µs | **3.2x** |
+| Triangular Lattice | `triangular_lattice_V100_E261` | 100 | 261 | Gabow1976 | Blossom | **2.87 µs** | 9.18 µs | **3.2x** |
+
+Winner vs runner-up for each configuration. As a top-12 ranking, it overrepresents extreme cases; see the [Decision Guide](#decision-guide) for broader guidance.
 
 ## Bipartite Matching Comparison
 
-Hopcroft-Karp is a specialized bipartite matching algorithm. The tables below compare it against the three general-purpose algorithms on bipartite inputs.
+The last column reports `(best base general-algorithm median) / (HK median)`: above 1 = HK faster, below 1 = general algorithm faster. HK uses a more compact representation than the general solvers; see [Threats to Validity](#threats-to-validity).
 
 ### Complete Bipartite K_{n,n}
 
-| Config | \|V\| | \|E\| | HK | Blossom | MV | Blum | HK Speedup |
-|:--|--:|--:|--:|--:|--:|--:|--:|
-| 10 x 10 | 20 | 100 | **940 ns** | 1.01 µs | 6.70 µs | 6.45 µs | 1.1x vs Blossom |
-| 25 x 25 | 50 | 625 | **2.79 µs** | 3.80 µs | 27.0 µs | 25.3 µs | 1.4x vs Blossom |
-| 50 x 50 | 100 | 2,500 | **8.07 µs** | 13.5 µs | 84.3 µs | 74.5 µs | 1.7x vs Blossom |
-| 100 x 100 | 200 | 10,000 | **23.7 µs** | 50.7 µs | 289 µs | 244 µs | 2.1x vs Blossom |
-| 200 x 200 | 400 | 40,000 | **86.3 µs** | 194 µs | 2.22 ms | 832 µs | 2.3x vs Blossom |
-| 500 x 500 | 1,000 | 250,000 | **462 µs** | 1.20 ms | 13.0 ms | 4.92 ms | 2.6x vs Blossom |
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 10 | 20 | 100 | 783 ns | **493 ns** | 917 ns | 5.79 µs | 5.82 µs | Gabow1976 | 0.6x |
+| 25 x 25 | 50 | 625 | 2.37 µs | **2.06 µs** | 3.86 µs | 22.86 µs | 24.03 µs | Gabow1976 | 0.9x |
+| 50 x 50 | 100 | 2,500 | 6.91 µs | **6.89 µs** | 13.03 µs | 69.28 µs | 70.15 µs | Gabow1976 | 1.0x |
+| 100 x 100 | 200 | 10,000 | **21.48 µs** | 25.39 µs | 48.61 µs | 238.10 µs | 240.25 µs | HopcroftKarp | 1.2x |
+| 200 x 200 | 400 | 40,000 | **79.92 µs** | 97.71 µs | 186.35 µs | 1.85 ms | 828.10 µs | HopcroftKarp | 1.2x |
+| 500 x 500 | 1,000 | 250,000 | **444.82 µs** | 612.33 µs | 1.19 ms | 11.45 ms | 4.83 ms | HopcroftKarp | 1.4x |
 
-HK wins at every size. On dense bipartite graphs, Blossom is the closest general-purpose competitor, and HK's advantage grows from 1.1x at V=20 to 2.6x at V=1,000.
+### Crown Graphs C_n
+
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 10 | 20 | 90 | 754 ns | **468 ns** | 884 ns | 5.59 µs | 5.84 µs | Gabow1976 | 0.6x |
+| 25 x 25 | 50 | 600 | 3.16 µs | **2.01 µs** | 3.77 µs | 28.43 µs | 37.21 µs | Gabow1976 | 0.6x |
+| 50 x 50 | 100 | 2,450 | 6.81 µs | **6.69 µs** | 12.95 µs | 68.73 µs | 70.47 µs | Gabow1976 | 1.0x |
+| 100 x 100 | 200 | 9,900 | **21.79 µs** | 24.83 µs | 48.61 µs | 244.61 µs | 237.77 µs | HopcroftKarp | 1.1x |
+| 200 x 200 | 400 | 39,800 | **79.86 µs** | 97.72 µs | 210.61 µs | 884.81 µs | 825.57 µs | HopcroftKarp | 1.2x |
 
 ### Random Sparse Bipartite (avg degree ~6)
 
-| n | \|V\| | \|E\| | HK | Blossom | MV | Blum | HK Speedup |
-|--:|--:|--:|--:|--:|--:|--:|--:|
-| 50 | 100 | 291 | **5.93 µs** | 9.63 µs | 36.1 µs | 46.5 µs | 1.6x vs Blossom |
-| 100 | 200 | 621 | **16.3 µs** | 32.7 µs | 87.9 µs | 135 µs | 2.0x vs Blossom |
-| 200 | 400 | 1,206 | **42.9 µs** | 127 µs | 197 µs | 389 µs | 3.0x vs Blossom |
-| 500 | 1,000 | 2,983 | **121 µs** | 736 µs | 559 µs | 1.00 ms | 4.6x vs MV |
-| 1,000 | 2,000 | 5,944 | **366 µs** | 3.07 ms | 1.22 ms | 2.53 ms | 3.3x vs MV |
-
-On sparse bipartite graphs, HK's advantage is larger and grows with size. At V=2,000, HK is 3.3x faster than the best general algorithm (MV).
+| n | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
+|--:|--:|--:|--:|--:|--:|--:|--:|:--|--:|
+| 50 | 100 | 291 | 5.09 µs | **3.13 µs** | 9.35 µs | 29.24 µs | 43.06 µs | Gabow1976 | 0.6x |
+| 100 | 200 | 621 | 14.49 µs | **9.45 µs** | 31.73 µs | 78.80 µs | 127.07 µs | Gabow1976 | 0.7x |
+| 200 | 400 | 1,206 | **34.49 µs** | 38.44 µs | 125.49 µs | 183.37 µs | 470.31 µs | HopcroftKarp | 1.1x |
+| 500 | 1,000 | 2,983 | **105.21 µs** | 193.04 µs | 717.98 µs | 512.13 µs | 1.08 ms | HopcroftKarp | 1.8x |
+| 1,000 | 2,000 | 5,944 | **316.40 µs** | 840.25 µs | 2.88 ms | 1.11 ms | 3.34 ms | HopcroftKarp | 2.7x |
 
 ### Imbalanced Bipartite K_{m, 10m}
 
-| Config | \|V\| | \|E\| | HK | Blossom | MV | Blum | HK Speedup |
-|:--|--:|--:|--:|--:|--:|--:|--:|
-| 10 x 100 | 110 | 1,000 | **1.71 µs** | 42.7 µs | 50.3 µs | 44.9 µs | 25.0x vs Blossom |
-| 20 x 200 | 220 | 4,000 | **5.97 µs** | 244 µs | 170 µs | 140 µs | 23.4x vs Blum |
-| 50 x 500 | 550 | 25,000 | **27.2 µs** | 2.97 ms | 884 µs | 665 µs | 24.5x vs Blum |
-| 100 x 1,000 | 1,100 | 100,000 | **104 µs** | 21.0 ms | 3.28 ms | 2.35 ms | 22.6x vs Blum |
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 100 | 110 | 1,000 | **1.49 µs** | 20.75 µs | 44.68 µs | 44.80 µs | 583.46 µs | HopcroftKarp | 14.0x |
+| 20 x 200 | 220 | 4,000 | **5.10 µs** | 126.63 µs | 231.34 µs | 157.52 µs | 3.76 ms | HopcroftKarp | 24.9x |
+| 50 x 500 | 550 | 25,000 | **26.53 µs** | 1.64 ms | 2.79 ms | 794.18 µs | 53.08 ms | HopcroftKarp | 29.9x |
+| 100 x 1,000 | 1,100 | 100,000 | **97.77 µs** | 11.65 ms | 19.63 ms | 2.87 ms | 399.91 ms | HopcroftKarp | 29.4x |
 
-HK is 22-25x faster than the best general-purpose algorithm on imbalanced bipartite graphs. General algorithms spend most of their time on the larger partition where few augmenting paths exist.
+Across all four bipartite groups: Gabow 1976 wins small/dense balanced cases, HK wins larger and all imbalanced cases (14-30x).
 
-## Crossover Analysis
+## Threats to Validity
 
-The vertex count at which MV overtakes Blossom depends on edge density and graph structure:
-
-| Graph Family | Avg Degree | Approx. Crossover \|V\| |
-|:--|--:|--:|
-| Star | 2 | ~75 |
-| Complete | V-1 | ~150 |
-| Barbell | varies | ~150 |
-| Path / Cycle | 2 | ~250 |
-| Grid | ~4 | ~350 |
-| Random Regular k=4 | 4 | ~350 |
-| Watts-Strogatz k=6 | 6 | ~350 |
-| Barabasi-Albert m=2 | ~4 | ~500 |
-| Barabasi-Albert m=5 | ~10 | ~500 |
-| Watts-Strogatz k=10 | 10 | ~500 |
-| Dense half (E=V^2/4) | V/2 | ~600 |
-| Sparse d6 | 6 | ~750 |
-| Medium d20 | 20 | ~750 |
-| Random Geometric | ~6 | ~750 |
-| Stochastic Block Model | varies | ~750 |
-| Crown | n-1 | >400 (Blossom always) |
-| Comp. Bipartite (NxN) | n | >200 (Blossom always) |
-
-The crossover is not a simple function of average degree. Structural properties also matter: dense bipartite graphs (crown, complete bipartite) consistently favor Blossom regardless of size, while star graphs cross over at the smallest vertex count despite minimal average degree, because every augmenting path must pass through the central hub.
+- **Single implementations.** The Blossom implementation uses linear-scan blossom contraction. A union-find-based contraction would have a smaller constant factor and could shift crossover points.
+- **No external baselines.** We do not compare against other maximum cardinality matching implementations. The crossover points apply to these specific `geometric-traits` implementations.
+- **Limited preprocessing menu.** The suite benchmarks only the built-in `KS1` and `KS12` Karp-Sipser wrappers. Other preprocessing rules or dynamic reduction schedules could shift the observed winner map.
+- **Single random seed.** Random graph benchmarks use one fixed seed (`42`) per parameter tuple for reproducibility. Criterion provides many timing samples for that instance, but it does not characterize instance-to-instance variance across different random draws.
+- **Fixed algorithm order.** Algorithms always run in the same order (Blossom variants first, then Gabow, MV, Blum). Earlier algorithms get a cooler CPU and cleaner allocator state. Unlikely to affect large gaps but may matter for modest leads.
+- **CPU boost enabled.** Thermal drift during an approximately 36-hour sequential run means early benchmarks may run at higher boost clocks than later ones.
+- **Bipartite representation confound.** Hopcroft-Karp uses a compact CSR2D (n rows, each edge stored once); general algorithms use SymmetricCSR2D (2n rows, each edge stored twice). Part of HK's speedup is the more cache-friendly representation. The reported HK speedups are upper bounds on the pure algorithmic advantage.
 
 ## Methodology
 
 - **Framework:** [Criterion.rs](https://github.com/bheisler/criterion.rs) 0.8 with HTML reports
-- **Timing:** Median of adaptive sample sizes (10-100 iterations, 10-60s measurement time)
-- **Graph representation:** `SymmetricCSR2D<CSR2D<usize, usize, usize>>` from `geometric-traits`
-- **Random seed:** All random graphs seeded with `42` for reproducibility
-- **Compilation:** `--release` (optimized), single-threaded
+- **Benchmarked variants:** 4 base general algorithms x {base, `KS1`, `KS12`} = 12 general variants, plus Hopcroft-Karp on bipartite suites
+- **Reporting metric:** tables round `median.point_estimate`; winner counts use strict lowest-median
+- **Timing:** Criterion sample sizes of 10, 30, or 100 with per-group measurement windows of 10, 20, 30, or 60 seconds; some small groups still use Criterion defaults where no override is set
+- **Graph representation:** general algorithms use `SymmetricCSR2D<CSR2D<usize, usize, usize>>`; Hopcroft-Karp uses a non-symmetric `CSR2D<usize, usize, usize>`
+- **Random seed:** all random graph families use one fixed seed (`42`) per parameter tuple for reproducibility
+- **Pinned dependency:** `geometric-traits` git revision `c8ddcb4`
+- **Pinned toolchain:** `nightly-2026-03-02` via [`rust-toolchain.toml`](rust-toolchain.toml)
+- **Compilation:** `--release` / `--bench` with `lto = "thin"` and `codegen-units = 1`
+- **CPU policy:** boost enabled; `performance` governor. Algorithm order is fixed within each benchmark group
+- **Machine dependence:** absolute timings will vary across machines; winner rankings and speedup ratios are more portable
 
 ### Benchmark Suites
 
 | Suite | Groups | Configurations | Focus |
 |:--|--:|--:|:--|
-| `scaling_with_size` | 5 | 46 | Fixed density, varying vertex count |
+| `scaling_with_size` | 9 | 91 | Fixed density and structured families, varying vertex count |
 | `scaling_with_density` | 5 | 34 | Fixed vertices, varying edge probability |
-| `topology_comparison` | 4 | 50 | All graph types at fixed vertex count |
+| `topology_comparison` | 4 | 64 | All graph types at fixed vertex count |
 | `realworld_structures` | 7 | 48 | Network science graph models |
 | `extreme_cases` | 7 | 50 | Pathological and structured graphs |
 | `bipartite` | 4 | 20 | Hopcroft-Karp vs general algorithms |
-| **Total** | **32** | **248** | **764 data points** |
+| **Total** | **36** | **307** | **3,704 algorithm/config measurements** |
+
+### Machine
+
+AMD Ryzen Threadripper PRO 5975WX (32 cores), 1 TiB RAM, Ubuntu 24.04, boost enabled.
 
 ## Reproducing
 
+A full run takes **~36 hours** on the documented machine. Pre-built Criterion output is on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+
 ```bash
-# Run all benchmarks (~2-3 hours)
+# Browse archived results
+tar -xzf <downloaded-archive>.tar.gz -C target/zenodo
+open target/zenodo/criterion/report/index.html
+
+# Or re-run from scratch
 cargo bench
 ```
 
-CI does two lighter-weight benchmark checks: `cargo bench --benches --no-run` to verify the optimized benchmark targets compile, and `cargo test --benches` to smoke-test the Criterion suites without running the full multi-hour statistical benchmark job.
-
-Results are stored in `target/criterion/` with HTML reports viewable at `target/criterion/report/index.html`.
+CI runs `cargo bench --benches --no-run` (compile check) and `cargo test --benches` (smoke test).
 
 ## References
 
@@ -707,7 +297,7 @@ Results are stored in `target/criterion/` with HTML reports viewable at `target/
 
 \[3\] C. Berge, "Two Theorems in Graph Theory," *Proceedings of the National Academy of Sciences*, vol. 43, no. 9, pp. 842-844, 1957. [doi:10.1073/pnas.43.9.842](https://doi.org/10.1073/pnas.43.9.842)
 
-\[4\] V. V. Vazirani, "A Simplification of the MV Matching Algorithm and its Proof," *arXiv:2312.03515*, 2024. [arXiv:2312.03515](https://arxiv.org/abs/2312.03515)
+\[4\] V. V. Vazirani, "A Simplification of the MV Matching Algorithm and its Proof," *arXiv:1210.4594*, 2013. [arXiv:1210.4594](https://arxiv.org/abs/1210.4594)
 
 \[5\] P. Erdos and A. Renyi, "On Random Graphs I," *Publicationes Mathematicae Debrecen*, vol. 6, pp. 290-297, 1959.
 
@@ -727,6 +317,16 @@ Results are stored in `target/criterion/` with HTML reports viewable at `target/
 
 \[13\] P. Erdos, A. Renyi, and V. T. Sos, "On a problem of graph theory," *Studia Scientiarum Mathematicarum Hungarica*, vol. 1, pp. 215-235, 1966.
 
-\[14\] N. Blum, "A New Approach to Maximum Matching in General Graphs," in *Proc. 17th International Colloquium on Automata, Languages and Programming (ICALP)*, pp. 586-597, 1990. Revised 2015. [arXiv:1509.04927](https://arxiv.org/abs/1509.04927)
+\[14\] N. Blum, "A New Approach to Maximum Matching in General Graphs," in *Automata, Languages and Programming: 17th International Colloquium (ICALP '90)*, LNCS 443, pp. 586-597, 1990. [doi:10.1007/BFb0032060](https://doi.org/10.1007/BFb0032060). Revised manuscript: N. Blum, "Maximum Matching in General Graphs without Explicit Consideration of Blossoms Revisited," *arXiv:1509.04927*, 2015. [arXiv:1509.04927](https://arxiv.org/abs/1509.04927)
 
 \[15\] J. E. Hopcroft and R. M. Karp, "An n^(5/2) Algorithm for Maximum Matchings in Bipartite Graphs," *SIAM Journal on Computing*, vol. 2, no. 4, pp. 225-231, 1973. [doi:10.1137/0202019](https://doi.org/10.1137/0202019)
+
+\[16\] H. N. Gabow, "An Efficient Implementation of Edmonds' Algorithm for Maximum Matching on Graphs," *Journal of the ACM*, vol. 23, no. 2, pp. 221-234, 1976. [doi:10.1145/321941.321942](https://doi.org/10.1145/321941.321942)
+
+\[17\] P. A. Peterson and M. C. Loui, "The General Maximum Matching Algorithm of Micali and Vazirani," *Algorithmica*, vol. 3, pp. 511-533, 1988. [doi:10.1007/BF01762129](https://doi.org/10.1007/BF01762129)
+
+\[18\] R. M. Karp and M. Sipser, "Maximum Matchings in Sparse Random Graphs," in *Proc. 22nd Annual IEEE Symposium on Foundations of Computer Science (FOCS)*, pp. 364-375, 1981. [doi:10.1109/SFCS.1981.21](https://doi.org/10.1109/SFCS.1981.21)
+
+\[19\] G. B. Mertzios, A. Nichterlein, and R. Niedermeier, "The Power of Linear-Time Data Reduction for Maximum Matching," *Algorithmica*, vol. 82, pp. 3521-3565, 2020. [doi:10.1007/s00453-020-00736-0](https://doi.org/10.1007/s00453-020-00736-0)
+
+\[20\] A. Dandeh and T. Lukovszki, "Experimental Evaluation of Blum's Maximum Matching Algorithm in General Graphs," in *Proc. Italian Conference on Theoretical Computer Science (ICTCS)*, CEUR Workshop Proceedings, vol. 4039, pp. 16-27, 2025. [ceur-ws.org/Vol-4039/paper23.pdf](https://ceur-ws.org/Vol-4039/paper23.pdf)

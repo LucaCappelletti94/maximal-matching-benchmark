@@ -1,179 +1,376 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 855" width="870" height="855" font-family="system-ui, -apple-system, sans-serif">
-<rect width="870" height="855" fill="#fafafa" rx="8"/>
-<text x="435" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a2e">Blossom vs Micali-Vazirani vs Blum: Performance Across Topologies at Increasing Scale</text>
-<line x1="435" y1="42" x2="435" y2="808" stroke="#e0e0e0" stroke-width="1"/>
-<line x1="30" y1="425" x2="840" y2="425" stroke="#e0e0e0" stroke-width="1"/>
-
-<!-- Panel: |V| ~ 100 (top-left) -->
-<g transform="translate(225, 255)">
-<text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">|V| ~ 100</text>
-<text x="0" y="-185" text-anchor="middle" font-size="10" font-style="italic" fill="#888">Blossom dominates</text>
-<circle cx="0" cy="0" r="33.8" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="67.5" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="101.2" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="135.0" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<line x1="0" y1="0" x2="0" y2="-135" stroke="#ccc" stroke-width="0.6"/>
-<text x="0" y="-155" text-anchor="middle" font-size="11" fill="#555">Star</text>
-<line x1="0" y1="0" x2="86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="102.2" y="-117.8" text-anchor="start" font-size="11" fill="#555">Path</text>
-<line x1="0" y1="0" x2="132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="156.6" y="-23.6" text-anchor="start" font-size="11" fill="#555">Cycle</text>
-<line x1="0" y1="0" x2="116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="137.7" y="83.5" text-anchor="start" font-size="11" fill="#555">Grid</text>
-<line x1="0" y1="0" x2="46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Torus</text>
-<line x1="0" y1="0" x2="-46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="-54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Wheel</text>
-<line x1="0" y1="0" x2="-116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="-137.7" y="77" text-anchor="end" font-size="11" fill="#555"><tspan x="-137.7">Watts</tspan><tspan x="-137.7" dy="13">Strogatz</tspan></text>
-<line x1="0" y1="0" x2="-132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-156.6" y="-30" text-anchor="end" font-size="11" fill="#555"><tspan x="-156.6">Erdős</tspan><tspan x="-156.6" dy="13">Rényi</tspan></text>
-<line x1="0" y1="0" x2="-86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-102.2" y="-124" text-anchor="end" font-size="11" fill="#555"><tspan x="-102.2">Barabási</tspan><tspan x="-102.2" dy="13">Albert</tspan></text>
-<polygon points="0,-100.5 86.8,-103.4 114.2,-20.1 116.1,67.0 45.7,125.6 -45.8,125.9 -102.6,59.2 -113.8,-20.1 -57.5,-68.5" fill="rgba(220,60,60,0.15)" stroke="#dc3c3c" stroke-width="1.8"/>
-<polygon points="0,-121.1 63.4,-75.6 97.2,-17.1 79.6,46.0 31.0,85.0 -31.3,86.1 -52.0,30.0 -31.6,-5.6 -26.5,-31.5" fill="rgba(50,100,200,0.15)" stroke="#3264c8" stroke-width="1.8"/>
-<polygon points="0,-95.7 58.8,-70.0 89.4,-15.8 76.4,44.1 29.6,81.4 -29.5,81.0 -47.0,27.1 -38.8,-6.8 -15.6,-18.6" fill="rgba(44,160,44,0.15)" stroke="#2ca02c" stroke-width="1.8"/>
-<circle cx="0" cy="-100.5" r="2.5" fill="#dc3c3c"/><circle cx="0" cy="-121.1" r="2.5" fill="#3264c8"/><circle cx="0" cy="-95.7" r="2.5" fill="#2ca02c"/>
-<circle cx="86.8" cy="-103.4" r="2.5" fill="#dc3c3c"/><circle cx="63.4" cy="-75.6" r="2.5" fill="#3264c8"/><circle cx="58.8" cy="-70.0" r="2.5" fill="#2ca02c"/>
-<circle cx="114.2" cy="-20.1" r="2.5" fill="#dc3c3c"/><circle cx="97.2" cy="-17.1" r="2.5" fill="#3264c8"/><circle cx="89.4" cy="-15.8" r="2.5" fill="#2ca02c"/>
-<circle cx="116.1" cy="67.0" r="2.5" fill="#dc3c3c"/><circle cx="79.6" cy="46.0" r="2.5" fill="#3264c8"/><circle cx="76.4" cy="44.1" r="2.5" fill="#2ca02c"/>
-<circle cx="45.7" cy="125.6" r="2.5" fill="#dc3c3c"/><circle cx="31.0" cy="85.0" r="2.5" fill="#3264c8"/><circle cx="29.6" cy="81.4" r="2.5" fill="#2ca02c"/>
-<circle cx="-45.8" cy="125.9" r="2.5" fill="#dc3c3c"/><circle cx="-31.3" cy="86.1" r="2.5" fill="#3264c8"/><circle cx="-29.5" cy="81.0" r="2.5" fill="#2ca02c"/>
-<circle cx="-102.6" cy="59.2" r="2.5" fill="#dc3c3c"/><circle cx="-52.0" cy="30.0" r="2.5" fill="#3264c8"/><circle cx="-47.0" cy="27.1" r="2.5" fill="#2ca02c"/>
-<circle cx="-113.8" cy="-20.1" r="2.5" fill="#dc3c3c"/><circle cx="-31.6" cy="-5.6" r="2.5" fill="#3264c8"/><circle cx="-38.8" cy="-6.8" r="2.5" fill="#2ca02c"/>
-<circle cx="-57.5" cy="-68.5" r="2.5" fill="#dc3c3c"/><circle cx="-26.5" cy="-31.5" r="2.5" fill="#3264c8"/><circle cx="-15.6" cy="-18.6" r="2.5" fill="#2ca02c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 870" width="870" height="870" font-family="system-ui, -apple-system, sans-serif">
+<rect width="870" height="870" fill="#fafafa" rx="8"/>
+<text x="435.0" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a1a2e">Blossom vs Gabow vs Micali-Vazirani vs Blum: Performance Across Topologies</text>
+<line x1="435.0" y1="36" x2="435.0" y2="810" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="30" y1="420" x2="840" y2="420" stroke="#e0e0e0" stroke-width="1"/>
+<g transform="translate(225, 245)">
+<text x="0" y="-190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">|V| ~ 100</text>
+<text x="0" y="-176" text-anchor="middle" font-size="9" font-style="italic" fill="#888">Gabow dominates</text>
+<circle cx="0" cy="0" r="31.2" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="62.5" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="93.8" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="125.0" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<line x1="0" y1="0" x2="0.0" y2="-125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="-144.0" text-anchor="middle" font-size="9" fill="#555">Star</text>
+<line x1="0" y1="0" x2="62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="-124.3" text-anchor="start" font-size="9" fill="#555">Path</text>
+<line x1="0" y1="0" x2="108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="-70.5" text-anchor="start" font-size="9" fill="#555">Cycle</text>
+<line x1="0" y1="0" x2="125.0" y2="-0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="147.0" y="3.0" text-anchor="start" font-size="9" fill="#555">Grid</text>
+<line x1="0" y1="0" x2="108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="76.5" text-anchor="start" font-size="9" fill="#555">Torus</text>
+<line x1="0" y1="0" x2="62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="130.3" text-anchor="start" font-size="9" fill="#555">Wheel</text>
+<line x1="0" y1="0" x2="0.0" y2="125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="142.0" text-anchor="middle" font-size="9" fill="#555">Hex.</text>
+<text x="0.0" y="153.0" text-anchor="middle" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="122.3" text-anchor="end" font-size="9" fill="#555">Tri.</text>
+<text x="-73.5" y="133.3" text-anchor="end" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="68.5" text-anchor="end" font-size="9" fill="#555">Windmill</text>
+<text x="-127.3" y="79.5" text-anchor="end" font-size="9" fill="#555">K4</text>
+<line x1="0" y1="0" x2="-125.0" y2="0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="-147.0" y="-5.0" text-anchor="end" font-size="9" fill="#555">Watts</text>
+<text x="-147.0" y="6.0" text-anchor="end" font-size="9" fill="#555">Strogatz</text>
+<line x1="0" y1="0" x2="-108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="-78.5" text-anchor="end" font-size="9" fill="#555">Erdős</text>
+<text x="-127.3" y="-67.5" text-anchor="end" font-size="9" fill="#555">Rényi</text>
+<line x1="0" y1="0" x2="-62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="-132.3" text-anchor="end" font-size="9" fill="#555">Barabási</text>
+<text x="-73.5" y="-121.3" text-anchor="end" font-size="9" fill="#555">Albert</text>
+<polygon points="0.0,-22.5 39.3,-68.0 67.9,-39.2 77.3,-0.0 66.9,38.6 38.3,66.4 0.0,78.5 -36.7,63.6 -33.8,19.5 -62.9,0.0 -49.8,-28.7 -25.6,-44.3" fill="rgba(32,160,32,0.12)" stroke="#20A020" stroke-width="1.5"/>
+<polygon points="0.0,-91.7 41.9,-72.5 72.9,-42.1 81.0,-0.0 69.8,40.3 40.5,70.1 0.0,83.0 -38.7,67.0 -61.6,35.6 -67.7,0.0 -49.2,-28.4 -30.2,-52.4" fill="rgba(32,96,208,0.12)" stroke="#2060D0" stroke-width="1.5"/>
+<polygon points="0.0,-111.1 62.5,-108.3 107.3,-61.9 122.8,-0.0 106.3,61.4 61.0,105.7 0.0,125.0 -60.4,104.6 -82.5,47.6 -109.9,0.0 -92.3,-53.3 -44.6,-77.3" fill="rgba(230,159,0,0.12)" stroke="#E69F00" stroke-width="1.5"/>
+<polygon points="0.0,-81.5 47.7,-82.7 82.8,-47.8 95.1,-0.0 82.2,47.5 47.4,82.1 0.0,96.8 -47.1,81.6 -68.0,39.2 -88.6,0.0 -75.7,-43.7 -39.3,-68.0" fill="rgba(224,48,48,0.12)" stroke="#E03030" stroke-width="1.5"/>
+<circle cx="0.0" cy="-81.5" r="2" fill="#E03030"/>
+<circle cx="47.7" cy="-82.7" r="2" fill="#E03030"/>
+<circle cx="82.8" cy="-47.8" r="2" fill="#E03030"/>
+<circle cx="95.1" cy="-0.0" r="2" fill="#E03030"/>
+<circle cx="82.2" cy="47.5" r="2" fill="#E03030"/>
+<circle cx="47.4" cy="82.1" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="96.8" r="2" fill="#E03030"/>
+<circle cx="-47.1" cy="81.6" r="2" fill="#E03030"/>
+<circle cx="-68.0" cy="39.2" r="2" fill="#E03030"/>
+<circle cx="-88.6" cy="0.0" r="2" fill="#E03030"/>
+<circle cx="-75.7" cy="-43.7" r="2" fill="#E03030"/>
+<circle cx="-39.3" cy="-68.0" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="-111.1" r="2" fill="#E69F00"/>
+<circle cx="62.5" cy="-108.3" r="2" fill="#E69F00"/>
+<circle cx="107.3" cy="-61.9" r="2" fill="#E69F00"/>
+<circle cx="122.8" cy="-0.0" r="2" fill="#E69F00"/>
+<circle cx="106.3" cy="61.4" r="2" fill="#E69F00"/>
+<circle cx="61.0" cy="105.7" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="125.0" r="2" fill="#E69F00"/>
+<circle cx="-60.4" cy="104.6" r="2" fill="#E69F00"/>
+<circle cx="-82.5" cy="47.6" r="2" fill="#E69F00"/>
+<circle cx="-109.9" cy="0.0" r="2" fill="#E69F00"/>
+<circle cx="-92.3" cy="-53.3" r="2" fill="#E69F00"/>
+<circle cx="-44.6" cy="-77.3" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="-91.7" r="2" fill="#2060D0"/>
+<circle cx="41.9" cy="-72.5" r="2" fill="#2060D0"/>
+<circle cx="72.9" cy="-42.1" r="2" fill="#2060D0"/>
+<circle cx="81.0" cy="-0.0" r="2" fill="#2060D0"/>
+<circle cx="69.8" cy="40.3" r="2" fill="#2060D0"/>
+<circle cx="40.5" cy="70.1" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="83.0" r="2" fill="#2060D0"/>
+<circle cx="-38.7" cy="67.0" r="2" fill="#2060D0"/>
+<circle cx="-61.6" cy="35.6" r="2" fill="#2060D0"/>
+<circle cx="-67.7" cy="0.0" r="2" fill="#2060D0"/>
+<circle cx="-49.2" cy="-28.4" r="2" fill="#2060D0"/>
+<circle cx="-30.2" cy="-52.4" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="-22.5" r="2" fill="#20A020"/>
+<circle cx="39.3" cy="-68.0" r="2" fill="#20A020"/>
+<circle cx="67.9" cy="-39.2" r="2" fill="#20A020"/>
+<circle cx="77.3" cy="-0.0" r="2" fill="#20A020"/>
+<circle cx="66.9" cy="38.6" r="2" fill="#20A020"/>
+<circle cx="38.3" cy="66.4" r="2" fill="#20A020"/>
+<circle cx="0.0" cy="78.5" r="2" fill="#20A020"/>
+<circle cx="-36.7" cy="63.6" r="2" fill="#20A020"/>
+<circle cx="-33.8" cy="19.5" r="2" fill="#20A020"/>
+<circle cx="-62.9" cy="0.0" r="2" fill="#20A020"/>
+<circle cx="-49.8" cy="-28.7" r="2" fill="#20A020"/>
+<circle cx="-25.6" cy="-44.3" r="2" fill="#20A020"/>
 </g>
-
-<!-- Panel: |V| ~ 500 (top-right) -->
-<g transform="translate(645, 255)">
-<text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">|V| ~ 500</text>
-<text x="0" y="-185" text-anchor="middle" font-size="10" font-style="italic" fill="#888">Crossover zone</text>
-<circle cx="0" cy="0" r="33.8" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="67.5" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="101.2" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="135.0" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<line x1="0" y1="0" x2="0" y2="-135" stroke="#ccc" stroke-width="0.6"/>
-<text x="0" y="-155" text-anchor="middle" font-size="11" fill="#555">Star</text>
-<line x1="0" y1="0" x2="86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="102.2" y="-117.8" text-anchor="start" font-size="11" fill="#555">Path</text>
-<line x1="0" y1="0" x2="132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="156.6" y="-23.6" text-anchor="start" font-size="11" fill="#555">Cycle</text>
-<line x1="0" y1="0" x2="116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="137.7" y="83.5" text-anchor="start" font-size="11" fill="#555">Grid</text>
-<line x1="0" y1="0" x2="46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Torus</text>
-<line x1="0" y1="0" x2="-46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="-54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Wheel</text>
-<line x1="0" y1="0" x2="-116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="-137.7" y="77" text-anchor="end" font-size="11" fill="#555"><tspan x="-137.7">Watts</tspan><tspan x="-137.7" dy="13">Strogatz</tspan></text>
-<line x1="0" y1="0" x2="-132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-156.6" y="-30" text-anchor="end" font-size="11" fill="#555"><tspan x="-156.6">Erdős</tspan><tspan x="-156.6" dy="13">Rényi</tspan></text>
-<line x1="0" y1="0" x2="-86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-102.2" y="-124" text-anchor="end" font-size="11" fill="#555"><tspan x="-102.2">Barabási</tspan><tspan x="-102.2" dy="13">Albert</tspan></text>
-<polygon points="0,-54.4 52.2,-62.2 80.1,-14.1 69.3,40.0 27.4,75.2 -27.6,75.8 -63.3,36.6 -68.1,-12.0 -35.2,-41.9" fill="rgba(220,60,60,0.15)" stroke="#dc3c3c" stroke-width="1.8"/>
-<polygon points="0,-135.0 75.3,-89.7 114.9,-20.3 96.4,55.7 38.0,104.4 -38.2,104.9 -80.3,46.4 -62.8,-11.1 -37.6,-44.8" fill="rgba(50,100,200,0.15)" stroke="#3264c8" stroke-width="1.8"/>
-<polygon points="0,-115.1 71.9,-85.7 110.2,-19.4 94.6,54.6 37.4,102.6 -37.1,101.9 -66.7,38.5 -51.0,-9.0 -15.6,-18.6" fill="rgba(44,160,44,0.15)" stroke="#2ca02c" stroke-width="1.8"/>
-<circle cx="0" cy="-54.4" r="2.5" fill="#dc3c3c"/><circle cx="0" cy="-135.0" r="2.5" fill="#3264c8"/><circle cx="0" cy="-115.1" r="2.5" fill="#2ca02c"/>
-<circle cx="52.2" cy="-62.2" r="2.5" fill="#dc3c3c"/><circle cx="75.3" cy="-89.7" r="2.5" fill="#3264c8"/><circle cx="71.9" cy="-85.7" r="2.5" fill="#2ca02c"/>
-<circle cx="80.1" cy="-14.1" r="2.5" fill="#dc3c3c"/><circle cx="114.9" cy="-20.3" r="2.5" fill="#3264c8"/><circle cx="110.2" cy="-19.4" r="2.5" fill="#2ca02c"/>
-<circle cx="69.3" cy="40.0" r="2.5" fill="#dc3c3c"/><circle cx="96.4" cy="55.7" r="2.5" fill="#3264c8"/><circle cx="94.6" cy="54.6" r="2.5" fill="#2ca02c"/>
-<circle cx="27.4" cy="75.2" r="2.5" fill="#dc3c3c"/><circle cx="38.0" cy="104.4" r="2.5" fill="#3264c8"/><circle cx="37.4" cy="102.6" r="2.5" fill="#2ca02c"/>
-<circle cx="-27.6" cy="75.8" r="2.5" fill="#dc3c3c"/><circle cx="-38.2" cy="104.9" r="2.5" fill="#3264c8"/><circle cx="-37.1" cy="101.9" r="2.5" fill="#2ca02c"/>
-<circle cx="-63.3" cy="36.6" r="2.5" fill="#dc3c3c"/><circle cx="-80.3" cy="46.4" r="2.5" fill="#3264c8"/><circle cx="-66.7" cy="38.5" r="2.5" fill="#2ca02c"/>
-<circle cx="-68.1" cy="-12.0" r="2.5" fill="#dc3c3c"/><circle cx="-62.8" cy="-11.1" r="2.5" fill="#3264c8"/><circle cx="-51.0" cy="-9.0" r="2.5" fill="#2ca02c"/>
-<circle cx="-35.2" cy="-41.9" r="2.5" fill="#dc3c3c"/><circle cx="-37.6" cy="-44.8" r="2.5" fill="#3264c8"/><circle cx="-15.6" cy="-18.6" r="2.5" fill="#2ca02c"/>
-<text x="16" y="-84.3" text-anchor="middle" font-size="8" font-weight="bold" fill="#3264c8">MV 7.8x</text>
+<g transform="translate(645, 245)">
+<text x="0" y="-190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">|V| ~ 500</text>
+<text x="0" y="-176" text-anchor="middle" font-size="9" font-style="italic" fill="#888">Crossover zone</text>
+<circle cx="0" cy="0" r="31.2" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="62.5" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="93.8" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="125.0" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<line x1="0" y1="0" x2="0.0" y2="-125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="-144.0" text-anchor="middle" font-size="9" fill="#555">Star</text>
+<line x1="0" y1="0" x2="62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="-124.3" text-anchor="start" font-size="9" fill="#555">Path</text>
+<line x1="0" y1="0" x2="108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="-70.5" text-anchor="start" font-size="9" fill="#555">Cycle</text>
+<line x1="0" y1="0" x2="125.0" y2="-0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="147.0" y="3.0" text-anchor="start" font-size="9" fill="#555">Grid</text>
+<line x1="0" y1="0" x2="108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="76.5" text-anchor="start" font-size="9" fill="#555">Torus</text>
+<line x1="0" y1="0" x2="62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="130.3" text-anchor="start" font-size="9" fill="#555">Wheel</text>
+<line x1="0" y1="0" x2="0.0" y2="125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="142.0" text-anchor="middle" font-size="9" fill="#555">Hex.</text>
+<text x="0.0" y="153.0" text-anchor="middle" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="122.3" text-anchor="end" font-size="9" fill="#555">Tri.</text>
+<text x="-73.5" y="133.3" text-anchor="end" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="68.5" text-anchor="end" font-size="9" fill="#555">Windmill</text>
+<text x="-127.3" y="79.5" text-anchor="end" font-size="9" fill="#555">K4</text>
+<line x1="0" y1="0" x2="-125.0" y2="0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="-147.0" y="-5.0" text-anchor="end" font-size="9" fill="#555">Watts</text>
+<text x="-147.0" y="6.0" text-anchor="end" font-size="9" fill="#555">Strogatz</text>
+<line x1="0" y1="0" x2="-108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="-78.5" text-anchor="end" font-size="9" fill="#555">Erdős</text>
+<text x="-127.3" y="-67.5" text-anchor="end" font-size="9" fill="#555">Rényi</text>
+<line x1="0" y1="0" x2="-62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="-132.3" text-anchor="end" font-size="9" fill="#555">Barabási</text>
+<text x="-73.5" y="-121.3" text-anchor="end" font-size="9" fill="#555">Albert</text>
+<polygon points="0.0,-22.5 53.9,-93.4 94.2,-54.4 106.1,-0.0 92.0,53.1 52.9,91.7 0.0,106.7 -51.5,89.1 -36.6,21.1 -89.4,0.0 -64.6,-37.3 -29.4,-51.0" fill="rgba(32,160,32,0.12)" stroke="#20A020" stroke-width="1.5"/>
+<polygon points="0.0,-123.2 57.0,-98.8 98.5,-56.9 112.8,-0.0 97.6,56.4 55.8,96.7 0.0,112.7 -53.9,93.4 -88.1,50.9 -99.9,0.0 -72.1,-41.7 -39.8,-69.0" fill="rgba(32,96,208,0.12)" stroke="#2060D0" stroke-width="1.5"/>
+<polygon points="0.0,-109.9 62.5,-108.2 108.3,-62.5 124.3,-0.0 107.6,62.1 62.3,107.8 0.0,124.1 -61.9,107.2 -83.7,48.3 -111.3,0.0 -86.0,-49.6 -37.5,-65.0" fill="rgba(230,159,0,0.12)" stroke="#E69F00" stroke-width="1.5"/>
+<polygon points="0.0,-75.6 45.5,-78.9 79.5,-45.9 90.2,-0.0 78.4,45.3 45.5,78.8 0.0,91.0 -45.4,78.7 -65.6,37.9 -83.1,0.0 -73.6,-42.5 -37.9,-65.7" fill="rgba(224,48,48,0.12)" stroke="#E03030" stroke-width="1.5"/>
+<circle cx="0.0" cy="-75.6" r="2" fill="#E03030"/>
+<circle cx="45.5" cy="-78.9" r="2" fill="#E03030"/>
+<circle cx="79.5" cy="-45.9" r="2" fill="#E03030"/>
+<circle cx="90.2" cy="-0.0" r="2" fill="#E03030"/>
+<circle cx="78.4" cy="45.3" r="2" fill="#E03030"/>
+<circle cx="45.5" cy="78.8" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="91.0" r="2" fill="#E03030"/>
+<circle cx="-45.4" cy="78.7" r="2" fill="#E03030"/>
+<circle cx="-65.6" cy="37.9" r="2" fill="#E03030"/>
+<circle cx="-83.1" cy="0.0" r="2" fill="#E03030"/>
+<circle cx="-73.6" cy="-42.5" r="2" fill="#E03030"/>
+<circle cx="-37.9" cy="-65.7" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="-109.9" r="2" fill="#E69F00"/>
+<circle cx="62.5" cy="-108.2" r="2" fill="#E69F00"/>
+<circle cx="108.3" cy="-62.5" r="2" fill="#E69F00"/>
+<circle cx="124.3" cy="-0.0" r="2" fill="#E69F00"/>
+<circle cx="107.6" cy="62.1" r="2" fill="#E69F00"/>
+<circle cx="62.3" cy="107.8" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="124.1" r="2" fill="#E69F00"/>
+<circle cx="-61.9" cy="107.2" r="2" fill="#E69F00"/>
+<circle cx="-83.7" cy="48.3" r="2" fill="#E69F00"/>
+<circle cx="-111.3" cy="0.0" r="2" fill="#E69F00"/>
+<circle cx="-86.0" cy="-49.6" r="2" fill="#E69F00"/>
+<circle cx="-37.5" cy="-65.0" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="-123.2" r="2" fill="#2060D0"/>
+<circle cx="57.0" cy="-98.8" r="2" fill="#2060D0"/>
+<circle cx="98.5" cy="-56.9" r="2" fill="#2060D0"/>
+<circle cx="112.8" cy="-0.0" r="2" fill="#2060D0"/>
+<circle cx="97.6" cy="56.4" r="2" fill="#2060D0"/>
+<circle cx="55.8" cy="96.7" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="112.7" r="2" fill="#2060D0"/>
+<circle cx="-53.9" cy="93.4" r="2" fill="#2060D0"/>
+<circle cx="-88.1" cy="50.9" r="2" fill="#2060D0"/>
+<circle cx="-99.9" cy="0.0" r="2" fill="#2060D0"/>
+<circle cx="-72.1" cy="-41.7" r="2" fill="#2060D0"/>
+<circle cx="-39.8" cy="-69.0" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="-22.5" r="2" fill="#20A020"/>
+<circle cx="53.9" cy="-93.4" r="2" fill="#20A020"/>
+<circle cx="94.2" cy="-54.4" r="2" fill="#20A020"/>
+<circle cx="106.1" cy="-0.0" r="2" fill="#20A020"/>
+<circle cx="92.0" cy="53.1" r="2" fill="#20A020"/>
+<circle cx="52.9" cy="91.7" r="2" fill="#20A020"/>
+<circle cx="0.0" cy="106.7" r="2" fill="#20A020"/>
+<circle cx="-51.5" cy="89.1" r="2" fill="#20A020"/>
+<circle cx="-36.6" cy="21.1" r="2" fill="#20A020"/>
+<circle cx="-89.4" cy="0.0" r="2" fill="#20A020"/>
+<circle cx="-64.6" cy="-37.3" r="2" fill="#20A020"/>
+<circle cx="-29.4" cy="-51.0" r="2" fill="#20A020"/>
 </g>
-
-<!-- Panel: |V| ~ 1,000 (bottom-left) -->
-<g transform="translate(225, 650)">
-<text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">|V| ~ 1,000</text>
-<text x="0" y="-185" text-anchor="middle" font-size="10" font-style="italic" fill="#888">MV dominates</text>
-<circle cx="0" cy="0" r="33.8" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="67.5" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="101.2" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="135.0" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<line x1="0" y1="0" x2="0" y2="-135" stroke="#ccc" stroke-width="0.6"/>
-<text x="0" y="-155" text-anchor="middle" font-size="11" fill="#555">Star</text>
-<line x1="0" y1="0" x2="86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="102.2" y="-117.8" text-anchor="start" font-size="11" fill="#555">Path</text>
-<line x1="0" y1="0" x2="132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="156.6" y="-23.6" text-anchor="start" font-size="11" fill="#555">Cycle</text>
-<line x1="0" y1="0" x2="116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="137.7" y="83.5" text-anchor="start" font-size="11" fill="#555">Grid</text>
-<line x1="0" y1="0" x2="46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Torus</text>
-<line x1="0" y1="0" x2="-46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="-54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Wheel</text>
-<line x1="0" y1="0" x2="-116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="-137.7" y="77" text-anchor="end" font-size="11" fill="#555"><tspan x="-137.7">Watts</tspan><tspan x="-137.7" dy="13">Strogatz</tspan></text>
-<line x1="0" y1="0" x2="-132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-156.6" y="-30" text-anchor="end" font-size="11" fill="#555"><tspan x="-156.6">Erdős</tspan><tspan x="-156.6" dy="13">Rényi</tspan></text>
-<line x1="0" y1="0" x2="-86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-102.2" y="-124" text-anchor="end" font-size="11" fill="#555"><tspan x="-102.2">Barabási</tspan><tspan x="-102.2" dy="13">Albert</tspan></text>
-<polygon points="0,-43.1 42.4,-50.5 64.8,-11.4 55.7,32.2 21.9,60.1 -22.5,61.9 -51.4,29.7 -55.8,-9.8 -34.8,-41.4" fill="rgba(220,60,60,0.15)" stroke="#dc3c3c" stroke-width="1.8"/>
-<polygon points="0,-135.0 76.7,-91.4 117.7,-20.8 99.6,57.5 38.8,106.6 -39.1,107.5 -82.4,47.6 -73.2,-12.9 -33.4,-39.8" fill="rgba(50,100,200,0.15)" stroke="#3264c8" stroke-width="1.8"/>
-<polygon points="0,-118.1 73.9,-88.1 113.6,-20.0 96.4,55.6 38.3,105.2 -38.3,105.3 -51.8,29.9 -60.7,-10.7 -15.6,-18.6" fill="rgba(44,160,44,0.15)" stroke="#2ca02c" stroke-width="1.8"/>
-<circle cx="0" cy="-43.1" r="2.5" fill="#dc3c3c"/><circle cx="0" cy="-135.0" r="2.5" fill="#3264c8"/><circle cx="0" cy="-118.1" r="2.5" fill="#2ca02c"/>
-<circle cx="42.4" cy="-50.5" r="2.5" fill="#dc3c3c"/><circle cx="76.7" cy="-91.4" r="2.5" fill="#3264c8"/><circle cx="73.9" cy="-88.1" r="2.5" fill="#2ca02c"/>
-<circle cx="64.8" cy="-11.4" r="2.5" fill="#dc3c3c"/><circle cx="117.7" cy="-20.8" r="2.5" fill="#3264c8"/><circle cx="113.6" cy="-20.0" r="2.5" fill="#2ca02c"/>
-<circle cx="55.7" cy="32.2" r="2.5" fill="#dc3c3c"/><circle cx="99.6" cy="57.5" r="2.5" fill="#3264c8"/><circle cx="96.4" cy="55.6" r="2.5" fill="#2ca02c"/>
-<circle cx="21.9" cy="60.1" r="2.5" fill="#dc3c3c"/><circle cx="38.8" cy="106.6" r="2.5" fill="#3264c8"/><circle cx="38.3" cy="105.2" r="2.5" fill="#2ca02c"/>
-<circle cx="-22.5" cy="61.9" r="2.5" fill="#dc3c3c"/><circle cx="-39.1" cy="107.5" r="2.5" fill="#3264c8"/><circle cx="-38.3" cy="105.3" r="2.5" fill="#2ca02c"/>
-<circle cx="-51.4" cy="29.7" r="2.5" fill="#dc3c3c"/><circle cx="-82.4" cy="47.6" r="2.5" fill="#3264c8"/><circle cx="-51.8" cy="29.9" r="2.5" fill="#2ca02c"/>
-<circle cx="-55.8" cy="-9.8" r="2.5" fill="#dc3c3c"/><circle cx="-73.2" cy="-12.9" r="2.5" fill="#3264c8"/><circle cx="-60.7" cy="-10.7" r="2.5" fill="#2ca02c"/>
-<circle cx="-34.8" cy="-41.4" r="2.5" fill="#dc3c3c"/><circle cx="-33.4" cy="-39.8" r="2.5" fill="#3264c8"/><circle cx="-15.6" cy="-18.6" r="2.5" fill="#2ca02c"/>
-<text x="16" y="-82.4" text-anchor="middle" font-size="8" font-weight="bold" fill="#3264c8">MV 15.8x</text>
+<g transform="translate(225, 635)">
+<text x="0" y="-190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">|V| ~ 1,000</text>
+<text x="0" y="-176" text-anchor="middle" font-size="9" font-style="italic" fill="#888">MV dominates</text>
+<circle cx="0" cy="0" r="31.2" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="62.5" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="93.8" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="125.0" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<line x1="0" y1="0" x2="0.0" y2="-125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="-144.0" text-anchor="middle" font-size="9" fill="#555">Star</text>
+<line x1="0" y1="0" x2="62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="-124.3" text-anchor="start" font-size="9" fill="#555">Path</text>
+<line x1="0" y1="0" x2="108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="-70.5" text-anchor="start" font-size="9" fill="#555">Cycle</text>
+<line x1="0" y1="0" x2="125.0" y2="-0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="147.0" y="3.0" text-anchor="start" font-size="9" fill="#555">Grid</text>
+<line x1="0" y1="0" x2="108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="76.5" text-anchor="start" font-size="9" fill="#555">Torus</text>
+<line x1="0" y1="0" x2="62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="130.3" text-anchor="start" font-size="9" fill="#555">Wheel</text>
+<line x1="0" y1="0" x2="0.0" y2="125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="142.0" text-anchor="middle" font-size="9" fill="#555">Hex.</text>
+<text x="0.0" y="153.0" text-anchor="middle" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="122.3" text-anchor="end" font-size="9" fill="#555">Tri.</text>
+<text x="-73.5" y="133.3" text-anchor="end" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="68.5" text-anchor="end" font-size="9" fill="#555">Windmill</text>
+<text x="-127.3" y="79.5" text-anchor="end" font-size="9" fill="#555">K4</text>
+<line x1="0" y1="0" x2="-125.0" y2="0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="-147.0" y="-5.0" text-anchor="end" font-size="9" fill="#555">Watts</text>
+<text x="-147.0" y="6.0" text-anchor="end" font-size="9" fill="#555">Strogatz</text>
+<line x1="0" y1="0" x2="-108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="-78.5" text-anchor="end" font-size="9" fill="#555">Erdős</text>
+<text x="-127.3" y="-67.5" text-anchor="end" font-size="9" fill="#555">Rényi</text>
+<line x1="0" y1="0" x2="-62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="-132.3" text-anchor="end" font-size="9" fill="#555">Barabási</text>
+<text x="-73.5" y="-121.3" text-anchor="end" font-size="9" fill="#555">Albert</text>
+<polygon points="0.0,-22.5 55.7,-96.5 96.4,-55.7 109.8,-0.0 95.2,54.9 54.9,95.1 0.0,110.4 -53.1,91.9 -35.1,20.2 -79.9,0.0 -69.8,-40.3 -27.2,-47.1" fill="rgba(32,160,32,0.12)" stroke="#20A020" stroke-width="1.5"/>
+<polygon points="0.0,-125.0 58.5,-101.4 101.4,-58.5 114.8,-0.0 99.2,57.3 57.4,99.3 0.0,115.8 -55.5,96.1 -91.9,53.1 -102.9,0.0 -78.0,-45.0 -38.2,-66.1" fill="rgba(32,96,208,0.12)" stroke="#2060D0" stroke-width="1.5"/>
+<polygon points="0.0,-99.2 56.5,-97.8 97.9,-56.5 111.6,-0.0 96.5,55.7 56.2,97.3 0.0,112.2 -55.5,96.2 -76.8,44.3 -101.7,0.0 -80.3,-46.3 -45.6,-79.0" fill="rgba(230,159,0,0.12)" stroke="#E69F00" stroke-width="1.5"/>
+<polygon points="0.0,-69.1 41.3,-71.6 71.6,-41.3 83.1,-0.0 71.9,41.5 41.6,72.0 0.0,83.5 -41.1,71.1 -61.2,35.3 -79.8,0.0 -67.7,-39.1 -38.7,-67.0" fill="rgba(224,48,48,0.12)" stroke="#E03030" stroke-width="1.5"/>
+<circle cx="0.0" cy="-69.1" r="2" fill="#E03030"/>
+<circle cx="41.3" cy="-71.6" r="2" fill="#E03030"/>
+<circle cx="71.6" cy="-41.3" r="2" fill="#E03030"/>
+<circle cx="83.1" cy="-0.0" r="2" fill="#E03030"/>
+<circle cx="71.9" cy="41.5" r="2" fill="#E03030"/>
+<circle cx="41.6" cy="72.0" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="83.5" r="2" fill="#E03030"/>
+<circle cx="-41.1" cy="71.1" r="2" fill="#E03030"/>
+<circle cx="-61.2" cy="35.3" r="2" fill="#E03030"/>
+<circle cx="-79.8" cy="0.0" r="2" fill="#E03030"/>
+<circle cx="-67.7" cy="-39.1" r="2" fill="#E03030"/>
+<circle cx="-38.7" cy="-67.0" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="-99.2" r="2" fill="#E69F00"/>
+<circle cx="56.5" cy="-97.8" r="2" fill="#E69F00"/>
+<circle cx="97.9" cy="-56.5" r="2" fill="#E69F00"/>
+<circle cx="111.6" cy="-0.0" r="2" fill="#E69F00"/>
+<circle cx="96.5" cy="55.7" r="2" fill="#E69F00"/>
+<circle cx="56.2" cy="97.3" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="112.2" r="2" fill="#E69F00"/>
+<circle cx="-55.5" cy="96.2" r="2" fill="#E69F00"/>
+<circle cx="-76.8" cy="44.3" r="2" fill="#E69F00"/>
+<circle cx="-101.7" cy="0.0" r="2" fill="#E69F00"/>
+<circle cx="-80.3" cy="-46.3" r="2" fill="#E69F00"/>
+<circle cx="-45.6" cy="-79.0" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="-125.0" r="2" fill="#2060D0"/>
+<circle cx="58.5" cy="-101.4" r="2" fill="#2060D0"/>
+<circle cx="101.4" cy="-58.5" r="2" fill="#2060D0"/>
+<circle cx="114.8" cy="-0.0" r="2" fill="#2060D0"/>
+<circle cx="99.2" cy="57.3" r="2" fill="#2060D0"/>
+<circle cx="57.4" cy="99.3" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="115.8" r="2" fill="#2060D0"/>
+<circle cx="-55.5" cy="96.1" r="2" fill="#2060D0"/>
+<circle cx="-91.9" cy="53.1" r="2" fill="#2060D0"/>
+<circle cx="-102.9" cy="0.0" r="2" fill="#2060D0"/>
+<circle cx="-78.0" cy="-45.0" r="2" fill="#2060D0"/>
+<circle cx="-38.2" cy="-66.1" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="-22.5" r="2" fill="#20A020"/>
+<circle cx="55.7" cy="-96.5" r="2" fill="#20A020"/>
+<circle cx="96.4" cy="-55.7" r="2" fill="#20A020"/>
+<circle cx="109.8" cy="-0.0" r="2" fill="#20A020"/>
+<circle cx="95.2" cy="54.9" r="2" fill="#20A020"/>
+<circle cx="54.9" cy="95.1" r="2" fill="#20A020"/>
+<circle cx="0.0" cy="110.4" r="2" fill="#20A020"/>
+<circle cx="-53.1" cy="91.9" r="2" fill="#20A020"/>
+<circle cx="-35.1" cy="20.2" r="2" fill="#20A020"/>
+<circle cx="-79.9" cy="0.0" r="2" fill="#20A020"/>
+<circle cx="-69.8" cy="-40.3" r="2" fill="#20A020"/>
+<circle cx="-27.2" cy="-47.1" r="2" fill="#20A020"/>
 </g>
-
-<!-- Panel: |V| ~ 2,000 (bottom-right) -->
-<g transform="translate(645, 650)">
-<text x="0" y="-200" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">|V| ~ 2,000</text>
-<text x="0" y="-185" text-anchor="middle" font-size="10" font-style="italic" fill="#888">MV dominates</text>
-<circle cx="0" cy="0" r="33.8" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="67.5" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="101.2" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<circle cx="0" cy="0" r="135.0" fill="none" stroke="#ddd" stroke-width="0.6"/>
-<line x1="0" y1="0" x2="0" y2="-135" stroke="#ccc" stroke-width="0.6"/>
-<text x="0" y="-155" text-anchor="middle" font-size="11" fill="#555">Star</text>
-<line x1="0" y1="0" x2="86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="102.2" y="-117.8" text-anchor="start" font-size="11" fill="#555">Path</text>
-<line x1="0" y1="0" x2="132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="156.6" y="-23.6" text-anchor="start" font-size="11" fill="#555">Cycle</text>
-<line x1="0" y1="0" x2="116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="137.7" y="83.5" text-anchor="start" font-size="11" fill="#555">Grid</text>
-<line x1="0" y1="0" x2="46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Torus</text>
-<line x1="0" y1="0" x2="-46.2" y2="126.9" stroke="#ccc" stroke-width="0.6"/>
-<text x="-54.4" y="161.4" text-anchor="middle" font-size="11" fill="#555">Wheel</text>
-<line x1="0" y1="0" x2="-116.9" y2="67.5" stroke="#ccc" stroke-width="0.6"/>
-<text x="-137.7" y="77" text-anchor="end" font-size="11" fill="#555"><tspan x="-137.7">Watts</tspan><tspan x="-137.7" dy="13">Strogatz</tspan></text>
-<line x1="0" y1="0" x2="-132.9" y2="-23.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-156.6" y="-30" text-anchor="end" font-size="11" fill="#555"><tspan x="-156.6">Erdős</tspan><tspan x="-156.6" dy="13">Rényi</tspan></text>
-<line x1="0" y1="0" x2="-86.8" y2="-103.4" stroke="#ccc" stroke-width="0.6"/>
-<text x="-102.2" y="-124" text-anchor="end" font-size="11" fill="#555"><tspan x="-102.2">Barabási</tspan><tspan x="-102.2" dy="13">Albert</tspan></text>
-<polygon points="0,-24.3 28.9,-34.5 45.6,-8.0 38.2,22.1 12.5,34.4 -15.5,42.7 -35.1,20.3 -33.4,-5.9 -23.4,-27.8" fill="rgba(220,60,60,0.15)" stroke="#dc3c3c" stroke-width="1.8"/>
-<polygon points="0,-135.0 76.6,-91.3 117.1,-20.7 91.3,52.7 30.3,83.2 -39.5,108.5 -81.0,46.7 -72.3,-12.8 -36.9,-44.0" fill="rgba(50,100,200,0.15)" stroke="#3264c8" stroke-width="1.8"/>
-<polygon points="0,-118.8 74.3,-88.5 113.7,-20.1 95.7,55.3 36.3,99.6 -38.4,105.4 -53.1,30.7 -45.9,-8.1 -15.8,-18.9" fill="rgba(44,160,44,0.15)" stroke="#2ca02c" stroke-width="1.8"/>
-<circle cx="0" cy="-24.3" r="2.5" fill="#dc3c3c"/><circle cx="0" cy="-135.0" r="2.5" fill="#3264c8"/><circle cx="0" cy="-118.8" r="2.5" fill="#2ca02c"/>
-<circle cx="28.9" cy="-34.5" r="2.5" fill="#dc3c3c"/><circle cx="76.6" cy="-91.3" r="2.5" fill="#3264c8"/><circle cx="74.3" cy="-88.5" r="2.5" fill="#2ca02c"/>
-<circle cx="45.6" cy="-8.0" r="2.5" fill="#dc3c3c"/><circle cx="117.1" cy="-20.7" r="2.5" fill="#3264c8"/><circle cx="113.7" cy="-20.1" r="2.5" fill="#2ca02c"/>
-<circle cx="38.2" cy="22.1" r="2.5" fill="#dc3c3c"/><circle cx="91.3" cy="52.7" r="2.5" fill="#3264c8"/><circle cx="95.7" cy="55.3" r="2.5" fill="#2ca02c"/>
-<circle cx="12.5" cy="34.4" r="2.5" fill="#dc3c3c"/><circle cx="30.3" cy="83.2" r="2.5" fill="#3264c8"/><circle cx="36.3" cy="99.6" r="2.5" fill="#2ca02c"/>
-<circle cx="-15.5" cy="42.7" r="2.5" fill="#dc3c3c"/><circle cx="-39.5" cy="108.5" r="2.5" fill="#3264c8"/><circle cx="-38.4" cy="105.4" r="2.5" fill="#2ca02c"/>
-<circle cx="-35.1" cy="20.3" r="2.5" fill="#dc3c3c"/><circle cx="-81.0" cy="46.7" r="2.5" fill="#3264c8"/><circle cx="-53.1" cy="30.7" r="2.5" fill="#2ca02c"/>
-<circle cx="-33.4" cy="-5.9" r="2.5" fill="#dc3c3c"/><circle cx="-72.3" cy="-12.8" r="2.5" fill="#3264c8"/><circle cx="-45.9" cy="-8.1" r="2.5" fill="#2ca02c"/>
-<circle cx="-23.4" cy="-27.8" r="2.5" fill="#dc3c3c"/><circle cx="-36.9" cy="-44.0" r="2.5" fill="#3264c8"/><circle cx="-15.8" cy="-18.9" r="2.5" fill="#2ca02c"/>
-<text x="16" y="-82" text-anchor="middle" font-size="8" font-weight="bold" fill="#3264c8">MV 32x</text>
+<g transform="translate(645, 635)">
+<text x="0" y="-190" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">|V| ~ 2,000</text>
+<text x="0" y="-176" text-anchor="middle" font-size="9" font-style="italic" fill="#888">MV dominates</text>
+<circle cx="0" cy="0" r="31.2" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="62.5" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="93.8" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="125.0" fill="none" stroke="#ddd" stroke-width="0.5"/>
+<line x1="0" y1="0" x2="0.0" y2="-125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="-144.0" text-anchor="middle" font-size="9" fill="#555">Star</text>
+<line x1="0" y1="0" x2="62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="-124.3" text-anchor="start" font-size="9" fill="#555">Path</text>
+<line x1="0" y1="0" x2="108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="-70.5" text-anchor="start" font-size="9" fill="#555">Cycle</text>
+<line x1="0" y1="0" x2="125.0" y2="-0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="147.0" y="3.0" text-anchor="start" font-size="9" fill="#555">Grid</text>
+<line x1="0" y1="0" x2="108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="127.3" y="76.5" text-anchor="start" font-size="9" fill="#555">Torus</text>
+<line x1="0" y1="0" x2="62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="73.5" y="130.3" text-anchor="start" font-size="9" fill="#555">Wheel</text>
+<line x1="0" y1="0" x2="0.0" y2="125.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="0.0" y="142.0" text-anchor="middle" font-size="9" fill="#555">Hex.</text>
+<text x="0.0" y="153.0" text-anchor="middle" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-62.5" y2="108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="122.3" text-anchor="end" font-size="9" fill="#555">Tri.</text>
+<text x="-73.5" y="133.3" text-anchor="end" font-size="9" fill="#555">Lattice</text>
+<line x1="0" y1="0" x2="-108.3" y2="62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="68.5" text-anchor="end" font-size="9" fill="#555">Windmill</text>
+<text x="-127.3" y="79.5" text-anchor="end" font-size="9" fill="#555">K4</text>
+<line x1="0" y1="0" x2="-125.0" y2="0.0" stroke="#ccc" stroke-width="0.4"/>
+<text x="-147.0" y="-5.0" text-anchor="end" font-size="9" fill="#555">Watts</text>
+<text x="-147.0" y="6.0" text-anchor="end" font-size="9" fill="#555">Strogatz</text>
+<line x1="0" y1="0" x2="-108.3" y2="-62.5" stroke="#ccc" stroke-width="0.4"/>
+<text x="-127.3" y="-78.5" text-anchor="end" font-size="9" fill="#555">Erdős</text>
+<text x="-127.3" y="-67.5" text-anchor="end" font-size="9" fill="#555">Rényi</text>
+<line x1="0" y1="0" x2="-62.5" y2="-108.3" stroke="#ccc" stroke-width="0.4"/>
+<text x="-73.5" y="-132.3" text-anchor="end" font-size="9" fill="#555">Barabási</text>
+<text x="-73.5" y="-121.3" text-anchor="end" font-size="9" fill="#555">Albert</text>
+<polygon points="0.0,-22.5 56.2,-97.3 97.3,-56.2 105.6,-0.0 39.5,22.8 55.3,95.8 0.0,111.4 -34.0,58.9 -33.6,19.4 -83.9,0.0 -65.5,-37.8 -26.2,-45.3" fill="rgba(32,160,32,0.12)" stroke="#20A020" stroke-width="1.5"/>
+<polygon points="0.0,-125.0 58.8,-101.8 101.9,-58.8 109.8,-0.0 87.3,50.4 57.7,100.0 0.0,116.3 -49.2,85.2 -93.4,53.9 -103.1,0.0 -79.6,-46.0 -41.5,-71.9" fill="rgba(32,96,208,0.12)" stroke="#2060D0" stroke-width="1.5"/>
+<polygon points="0.0,-87.9 50.1,-86.7 86.6,-50.0 99.6,-0.0 73.3,42.3 50.0,86.6 0.0,100.9 -40.7,70.5 -69.5,40.1 -91.6,0.0 -65.9,-38.0 -41.9,-72.5" fill="rgba(230,159,0,0.12)" stroke="#E69F00" stroke-width="1.5"/>
+<polygon points="0.0,-64.2 38.1,-66.0 65.6,-37.9 75.6,-0.0 61.5,35.5 38.1,66.0 0.0,76.0 -34.7,60.1 -55.8,32.2 -72.5,0.0 -59.8,-34.5 -35.5,-61.4" fill="rgba(224,48,48,0.12)" stroke="#E03030" stroke-width="1.5"/>
+<circle cx="0.0" cy="-64.2" r="2" fill="#E03030"/>
+<circle cx="38.1" cy="-66.0" r="2" fill="#E03030"/>
+<circle cx="65.6" cy="-37.9" r="2" fill="#E03030"/>
+<circle cx="75.6" cy="-0.0" r="2" fill="#E03030"/>
+<circle cx="61.5" cy="35.5" r="2" fill="#E03030"/>
+<circle cx="38.1" cy="66.0" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="76.0" r="2" fill="#E03030"/>
+<circle cx="-34.7" cy="60.1" r="2" fill="#E03030"/>
+<circle cx="-55.8" cy="32.2" r="2" fill="#E03030"/>
+<circle cx="-72.5" cy="0.0" r="2" fill="#E03030"/>
+<circle cx="-59.8" cy="-34.5" r="2" fill="#E03030"/>
+<circle cx="-35.5" cy="-61.4" r="2" fill="#E03030"/>
+<circle cx="0.0" cy="-87.9" r="2" fill="#E69F00"/>
+<circle cx="50.1" cy="-86.7" r="2" fill="#E69F00"/>
+<circle cx="86.6" cy="-50.0" r="2" fill="#E69F00"/>
+<circle cx="99.6" cy="-0.0" r="2" fill="#E69F00"/>
+<circle cx="73.3" cy="42.3" r="2" fill="#E69F00"/>
+<circle cx="50.0" cy="86.6" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="100.9" r="2" fill="#E69F00"/>
+<circle cx="-40.7" cy="70.5" r="2" fill="#E69F00"/>
+<circle cx="-69.5" cy="40.1" r="2" fill="#E69F00"/>
+<circle cx="-91.6" cy="0.0" r="2" fill="#E69F00"/>
+<circle cx="-65.9" cy="-38.0" r="2" fill="#E69F00"/>
+<circle cx="-41.9" cy="-72.5" r="2" fill="#E69F00"/>
+<circle cx="0.0" cy="-125.0" r="2" fill="#2060D0"/>
+<circle cx="58.8" cy="-101.8" r="2" fill="#2060D0"/>
+<circle cx="101.9" cy="-58.8" r="2" fill="#2060D0"/>
+<circle cx="109.8" cy="-0.0" r="2" fill="#2060D0"/>
+<circle cx="87.3" cy="50.4" r="2" fill="#2060D0"/>
+<circle cx="57.7" cy="100.0" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="116.3" r="2" fill="#2060D0"/>
+<circle cx="-49.2" cy="85.2" r="2" fill="#2060D0"/>
+<circle cx="-93.4" cy="53.9" r="2" fill="#2060D0"/>
+<circle cx="-103.1" cy="0.0" r="2" fill="#2060D0"/>
+<circle cx="-79.6" cy="-46.0" r="2" fill="#2060D0"/>
+<circle cx="-41.5" cy="-71.9" r="2" fill="#2060D0"/>
+<circle cx="0.0" cy="-22.5" r="2" fill="#20A020"/>
+<circle cx="56.2" cy="-97.3" r="2" fill="#20A020"/>
+<circle cx="97.3" cy="-56.2" r="2" fill="#20A020"/>
+<circle cx="105.6" cy="-0.0" r="2" fill="#20A020"/>
+<circle cx="39.5" cy="22.8" r="2" fill="#20A020"/>
+<circle cx="55.3" cy="95.8" r="2" fill="#20A020"/>
+<circle cx="0.0" cy="111.4" r="2" fill="#20A020"/>
+<circle cx="-34.0" cy="58.9" r="2" fill="#20A020"/>
+<circle cx="-33.6" cy="19.4" r="2" fill="#20A020"/>
+<circle cx="-83.9" cy="0.0" r="2" fill="#20A020"/>
+<circle cx="-65.5" cy="-37.8" r="2" fill="#20A020"/>
+<circle cx="-26.2" cy="-45.3" r="2" fill="#20A020"/>
 </g>
-
-<!-- Legend -->
-<rect x="270" y="822" width="12" height="12" fill="rgba(220,60,60,0.3)" stroke="#dc3c3c" stroke-width="1.5" rx="2"/>
-<text x="286" y="832" font-size="11" fill="#333">Blossom</text>
-<rect x="400" y="822" width="12" height="12" fill="rgba(50,100,200,0.3)" stroke="#3264c8" stroke-width="1.5" rx="2"/>
-<text x="416" y="832" font-size="11" fill="#333">Micali-Vazirani</text>
-<rect x="560" y="822" width="12" height="12" fill="rgba(44,160,44,0.3)" stroke="#2ca02c" stroke-width="1.5" rx="2"/>
-<text x="576" y="832" font-size="11" fill="#333">Blum</text>
-<text x="435" y="844" text-anchor="middle" font-size="9" fill="#aaa">Larger polygon = faster (log-scale, independently normalized per chart) · github.com/LucaCappelletti94/maximal-matching-benchmark · 63e7d55 · 2026-03-22</text>
+<rect x="260" y="833" width="10" height="10" fill="rgba(224,48,48,0.8)" stroke="#E03030" stroke-width="1" rx="2"/>
+<text x="274" y="842" font-size="9" fill="#555">Blossom</text>
+<rect x="340" y="833" width="10" height="10" fill="rgba(230,159,0,0.8)" stroke="#E69F00" stroke-width="1" rx="2"/>
+<text x="354" y="842" font-size="9" fill="#555">Gabow 1976</text>
+<rect x="438" y="833" width="10" height="10" fill="rgba(32,96,208,0.8)" stroke="#2060D0" stroke-width="1" rx="2"/>
+<text x="452" y="842" font-size="9" fill="#555">Micali-Vazirani</text>
+<rect x="570" y="833" width="10" height="10" fill="rgba(32,160,32,0.8)" stroke="#20A020" stroke-width="1" rx="2"/>
+<text x="584" y="842" font-size="9" fill="#555">Blum 1990</text>
+<text x="862" y="865" text-anchor="end" font-size="7" fill="#bbb">github.com/LucaCappelletti94/maximal-matching-benchmark</text>
 </svg>

@@ -2,13 +2,14 @@ use std::hint::black_box;
 use std::time::Duration;
 
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
+mod common;
+
+use common::{Graph, bench_exact_matchers};
 use geometric_traits::{
-    impls::{CSR2D, SymmetricCSR2D},
+    impls::CSR2D,
     prelude::{randomized_graphs::*, *},
     traits::{EdgesBuilder, HopcroftKarp},
 };
-
-type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
 type BiGraph = CSR2D<usize, usize, usize>;
 
 /// Build a non-symmetric CSR2D for Hopcroft-Karp from a bipartite edge list.
@@ -61,15 +62,7 @@ fn bench_complete_bipartite(c: &mut Criterion) {
         group.bench_with_input(BenchmarkId::new("HopcroftKarp", &lbl), &bi, |b, g| {
             b.iter(|| black_box(g.hopcroft_karp()));
         });
-        group.bench_with_input(BenchmarkId::new("Blossom", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        group.bench_with_input(BenchmarkId::new("MicaliVazirani", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        group.bench_with_input(BenchmarkId::new("Blum", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut group, &lbl, &sym);
     }
 
     group.finish();
@@ -111,15 +104,7 @@ fn bench_crown(c: &mut Criterion) {
         group.bench_with_input(BenchmarkId::new("HopcroftKarp", &lbl), &bi, |b, g| {
             b.iter(|| black_box(g.hopcroft_karp()));
         });
-        group.bench_with_input(BenchmarkId::new("Blossom", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        group.bench_with_input(BenchmarkId::new("MicaliVazirani", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        group.bench_with_input(BenchmarkId::new("Blum", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut group, &lbl, &sym);
     }
 
     group.finish();
@@ -188,15 +173,7 @@ fn bench_random_bipartite(c: &mut Criterion) {
         group.bench_with_input(BenchmarkId::new("HopcroftKarp", &lbl), &bi, |b, g| {
             b.iter(|| black_box(g.hopcroft_karp()));
         });
-        group.bench_with_input(BenchmarkId::new("Blossom", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        group.bench_with_input(BenchmarkId::new("MicaliVazirani", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        group.bench_with_input(BenchmarkId::new("Blum", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut group, &lbl, &sym);
     }
 
     group.finish();
@@ -234,15 +211,7 @@ fn bench_imbalanced_bipartite(c: &mut Criterion) {
         group.bench_with_input(BenchmarkId::new("HopcroftKarp", &lbl), &bi, |b, g| {
             b.iter(|| black_box(g.hopcroft_karp()));
         });
-        group.bench_with_input(BenchmarkId::new("Blossom", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        group.bench_with_input(BenchmarkId::new("MicaliVazirani", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        group.bench_with_input(BenchmarkId::new("Blum", &lbl), &sym, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut group, &lbl, &sym);
     }
 
     group.finish();

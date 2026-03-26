@@ -1,31 +1,16 @@
-use std::hint::black_box;
 use std::time::Duration;
 
-use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
-use geometric_traits::{
-    impls::{CSR2D, SymmetricCSR2D},
-    prelude::{randomized_graphs::*, *},
-};
+mod common;
 
-type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
+use common::{Graph, bench_exact_matchers, graph_label};
+use criterion::{Criterion, criterion_group, criterion_main};
+use geometric_traits::prelude::randomized_graphs::*;
 
 macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
-        $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut $group, &$label, g);
     }};
-}
-
-fn graph_label(g: &Graph) -> String {
-    format!("V{}_E{}", g.order(), g.number_of_defined_values() / 2)
 }
 
 macro_rules! bench_named {
@@ -38,7 +23,7 @@ macro_rules! bench_named {
 }
 
 fn bench_topology_v100(c: &mut Criterion) {
-    eprintln!("[1/3] Running topology/V100 benchmarks...");
+    eprintln!("[1/4] Running topology/V100 benchmarks...");
     let mut group = c.benchmark_group("topology/V100");
 
     bench_named!(group, "complete", complete_graph(100));
@@ -56,6 +41,13 @@ fn bench_topology_v100(c: &mut Criterion) {
     );
     bench_named!(group, "turan", turan_graph(100, 5));
     bench_named!(group, "friendship", friendship_graph(49));
+    bench_named!(group, "windmill_k4", windmill_graph(33, 4));
+    bench_named!(group, "hexagonal_lattice", hexagonal_lattice_graph(6, 6));
+    bench_named!(
+        group,
+        "triangular_lattice",
+        triangular_lattice_graph(10, 10)
+    );
     bench_named!(group, "petersen", petersen_graph());
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 100, 0.1));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 100, 3));
@@ -65,7 +57,7 @@ fn bench_topology_v100(c: &mut Criterion) {
 }
 
 fn bench_topology_v500(c: &mut Criterion) {
-    eprintln!("[2/3] Running topology/V500 benchmarks...");
+    eprintln!("[2/4] Running topology/V500 benchmarks...");
     let mut group = c.benchmark_group("topology/V500");
     group
         .sample_size(30)
@@ -78,6 +70,13 @@ fn bench_topology_v500(c: &mut Criterion) {
     bench_named!(group, "torus", torus_graph(22, 23));
     bench_named!(group, "wheel", wheel_graph(499));
     bench_named!(group, "friendship", friendship_graph(249));
+    bench_named!(group, "windmill_k4", windmill_graph(166, 4));
+    bench_named!(group, "hexagonal_lattice", hexagonal_lattice_graph(15, 15));
+    bench_named!(
+        group,
+        "triangular_lattice",
+        triangular_lattice_graph(22, 23)
+    );
     bench_named!(group, "barbell", barbell_graph(50, 10));
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 500, 0.02));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 500, 3));
@@ -105,6 +104,14 @@ fn bench_topology_v1000(c: &mut Criterion) {
     bench_named!(group, "grid", grid_graph(32, 32));
     bench_named!(group, "torus", torus_graph(32, 32));
     bench_named!(group, "wheel", wheel_graph(999));
+    bench_named!(group, "friendship", friendship_graph(499));
+    bench_named!(group, "windmill_k4", windmill_graph(333, 4));
+    bench_named!(group, "hexagonal_lattice", hexagonal_lattice_graph(21, 22));
+    bench_named!(
+        group,
+        "triangular_lattice",
+        triangular_lattice_graph(32, 32)
+    );
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 1000, 0.01));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 1000, 3));
     bench_named!(group, "watts_strogatz", watts_strogatz(42, 1000, 6, 0.3));
@@ -131,6 +138,14 @@ fn bench_topology_v2000(c: &mut Criterion) {
     bench_named!(group, "grid", grid_graph(45, 45));
     bench_named!(group, "torus", torus_graph(45, 45));
     bench_named!(group, "wheel", wheel_graph(1999));
+    bench_named!(group, "friendship", friendship_graph(999));
+    bench_named!(group, "windmill_k4", windmill_graph(666, 4));
+    bench_named!(group, "hexagonal_lattice", hexagonal_lattice_graph(30, 31));
+    bench_named!(
+        group,
+        "triangular_lattice",
+        triangular_lattice_graph(45, 45)
+    );
     bench_named!(group, "erdos_renyi", erdos_renyi_gnp(42, 2000, 0.005));
     bench_named!(group, "barabasi_albert", barabasi_albert(42, 2000, 3));
     bench_named!(group, "watts_strogatz", watts_strogatz(42, 2000, 6, 0.3));

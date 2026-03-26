@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 380" width="870" height="380" font-family="system-ui, -apple-system, sans-serif">
+<rect width="870" height="380" fill="#fafafa" rx="8"/>
+<text x="435.0" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a1a2e">Hopcroft-Karp Speedup over Best Base Algorithm on Bipartite Graphs</text>
+<line x1="50" y1="318.0" x2="855" y2="318.0" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="318.0" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">1x</text>
+<line x1="50" y1="286.9" x2="855" y2="286.9" stroke="#eee" stroke-width="0.5"/>
+<line x1="50" y1="264.8" x2="855" y2="264.8" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="264.8" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">2x</text>
+<line x1="50" y1="233.7" x2="855" y2="233.7" stroke="#eee" stroke-width="0.5"/>
+<line x1="50" y1="194.5" x2="855" y2="194.5" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="194.5" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">5x</text>
+<line x1="50" y1="168.7" x2="855" y2="168.7" stroke="#eee" stroke-width="0.5"/>
+<line x1="50" y1="141.4" x2="855" y2="141.4" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="141.4" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">10x</text>
+<line x1="50" y1="110.2" x2="855" y2="110.2" stroke="#eee" stroke-width="0.5"/>
+<line x1="50" y1="88.2" x2="855" y2="88.2" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="88.2" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">20x</text>
+<line x1="50" y1="57.1" x2="855" y2="57.1" stroke="#eee" stroke-width="0.5"/>
+<text x="45" y="57.1" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">30x</text>
+<line x1="50" y1="318.0" x2="855" y2="318.0" stroke="#bbb" stroke-width="1"/>
+<line x1="50" y1="35" x2="50" y2="318" stroke="#ccc" stroke-width="0.5"/>
+<rect x="63.0" y="293.5" width="32.0" height="24.5" fill="#4a90d9" opacity="0.75" rx="2"/>
+<text x="79.0" y="290.5" text-anchor="middle" font-size="7" font-weight="bold" fill="#4a90d9">1.4x</text>
+<text x="79.0" y="330" text-anchor="middle" font-size="7" fill="#666">500x500</text>
+<rect x="99.0" y="318.0" width="32.0" height="0.2" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="115.0" y="321.2" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">1.0x</text>
+<text x="115.0" y="330" text-anchor="middle" font-size="7" fill="#666">50x50</text>
+<rect x="135.0" y="305.2" width="32.0" height="12.8" fill="#4a90d9" opacity="0.75" rx="2"/>
+<text x="151.0" y="302.2" text-anchor="middle" font-size="7" font-weight="bold" fill="#4a90d9">1.2x</text>
+<text x="151.0" y="330" text-anchor="middle" font-size="7" fill="#666">100x100</text>
+<rect x="171.0" y="318.0" width="32.0" height="15.0" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="187.0" y="336.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.6x</text>
+<text x="187.0" y="330" text-anchor="middle" font-size="7" fill="#666">10x10</text>
+<rect x="207.0" y="302.6" width="32.0" height="15.4" fill="#4a90d9" opacity="0.75" rx="2"/>
+<text x="223.0" y="299.6" text-anchor="middle" font-size="7" font-weight="bold" fill="#4a90d9">1.2x</text>
+<text x="223.0" y="330" text-anchor="middle" font-size="7" fill="#666">200x200</text>
+<rect x="243.0" y="318.0" width="32.0" height="10.7" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="259.0" y="331.7" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.9x</text>
+<text x="259.0" y="330" text-anchor="middle" font-size="7" fill="#666">25x25</text>
+<line x1="63.0" y1="340" x2="275.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="63.0" y1="337" x2="63.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="275.0" y1="337" x2="275.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<text x="169.0" y="354" text-anchor="middle" font-size="9" font-weight="bold" fill="#444">Complete K(n,n)</text>
+<rect x="304.0" y="318.0" width="32.0" height="1.3" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="320.0" y="322.3" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">1.0x</text>
+<text x="320.0" y="330" text-anchor="middle" font-size="7" fill="#666">50x50</text>
+<rect x="340.0" y="308.0" width="32.0" height="10.0" fill="#8b5cf6" opacity="0.75" rx="2"/>
+<text x="356.0" y="305.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#8b5cf6">1.1x</text>
+<text x="356.0" y="330" text-anchor="middle" font-size="7" fill="#666">100x100</text>
+<rect x="376.0" y="318.0" width="32.0" height="15.0" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="392.0" y="336.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.6x</text>
+<text x="392.0" y="330" text-anchor="middle" font-size="7" fill="#666">10x10</text>
+<rect x="412.0" y="302.5" width="32.0" height="15.5" fill="#8b5cf6" opacity="0.75" rx="2"/>
+<text x="428.0" y="299.5" text-anchor="middle" font-size="7" font-weight="bold" fill="#8b5cf6">1.2x</text>
+<text x="428.0" y="330" text-anchor="middle" font-size="7" fill="#666">200x200</text>
+<rect x="448.0" y="318.0" width="32.0" height="15.0" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="464.0" y="336.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.6x</text>
+<text x="464.0" y="330" text-anchor="middle" font-size="7" fill="#666">25x25</text>
+<line x1="304.0" y1="340" x2="480.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="304.0" y1="337" x2="304.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="480.0" y1="337" x2="480.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<text x="392.0" y="354" text-anchor="middle" font-size="9" font-weight="bold" fill="#444">Crown</text>
+<rect x="509.0" y="271.4" width="32.0" height="46.6" fill="#50a050" opacity="0.75" rx="2"/>
+<text x="525.0" y="268.4" text-anchor="middle" font-size="7" font-weight="bold" fill="#50a050">1.8x</text>
+<text x="525.0" y="330" text-anchor="middle" font-size="7" fill="#666">500x500</text>
+<rect x="545.0" y="318.0" width="32.0" height="15.0" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="561.0" y="336.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.6x</text>
+<text x="561.0" y="330" text-anchor="middle" font-size="7" fill="#666">50x50</text>
+<rect x="581.0" y="243.1" width="32.0" height="74.9" fill="#50a050" opacity="0.75" rx="2"/>
+<text x="597.0" y="240.1" text-anchor="middle" font-size="7" font-weight="bold" fill="#50a050">2.7x</text>
+<text x="597.0" y="330" text-anchor="middle" font-size="7" fill="#666">1000x1000</text>
+<rect x="617.0" y="318.0" width="32.0" height="15.0" fill="#cc4444" opacity="0.5" rx="2"/>
+<text x="633.0" y="336.0" text-anchor="middle" font-size="7" font-weight="bold" fill="#cc4444">0.7x</text>
+<text x="633.0" y="330" text-anchor="middle" font-size="7" fill="#666">100x100</text>
+<rect x="653.0" y="309.7" width="32.0" height="8.3" fill="#50a050" opacity="0.75" rx="2"/>
+<text x="669.0" y="306.7" text-anchor="middle" font-size="7" font-weight="bold" fill="#50a050">1.1x</text>
+<text x="669.0" y="330" text-anchor="middle" font-size="7" fill="#666">200x200</text>
+<line x1="509.0" y1="340" x2="685.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="509.0" y1="337" x2="509.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="685.0" y1="337" x2="685.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<text x="597.0" y="354" text-anchor="middle" font-size="9" font-weight="bold" fill="#444">Random (d~6)</text>
+<rect x="714.0" y="58.7" width="32.0" height="259.3" fill="#e07040" opacity="0.75" rx="2"/>
+<text x="730.0" y="55.7" text-anchor="middle" font-size="7" font-weight="bold" fill="#e07040">29.4x</text>
+<text x="730.0" y="330" text-anchor="middle" font-size="7" fill="#666">100x1000</text>
+<rect x="750.0" y="115.8" width="32.0" height="202.2" fill="#e07040" opacity="0.75" rx="2"/>
+<text x="766.0" y="112.8" text-anchor="middle" font-size="7" font-weight="bold" fill="#e07040">14.0x</text>
+<text x="766.0" y="330" text-anchor="middle" font-size="7" fill="#666">10x100</text>
+<rect x="786.0" y="71.5" width="32.0" height="246.5" fill="#e07040" opacity="0.75" rx="2"/>
+<text x="802.0" y="68.5" text-anchor="middle" font-size="7" font-weight="bold" fill="#e07040">24.9x</text>
+<text x="802.0" y="330" text-anchor="middle" font-size="7" fill="#666">20x200</text>
+<rect x="822.0" y="57.2" width="32.0" height="260.8" fill="#e07040" opacity="0.75" rx="2"/>
+<text x="838.0" y="54.2" text-anchor="middle" font-size="7" font-weight="bold" fill="#e07040">29.9x</text>
+<text x="838.0" y="330" text-anchor="middle" font-size="7" fill="#666">50x500</text>
+<line x1="714.0" y1="340" x2="854.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="714.0" y1="337" x2="714.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<line x1="854.0" y1="337" x2="854.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
+<text x="784.0" y="354" text-anchor="middle" font-size="9" font-weight="bold" fill="#444">Imbalanced K(m,10m)</text>
+<text x="14" y="176.5" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90, 14, 176.5)">Speedup (log scale)</text>
+<text x="862" y="375" text-anchor="end" font-size="7" fill="#bbb">github.com/LucaCappelletti94/maximal-matching-benchmark</text>
+</svg>

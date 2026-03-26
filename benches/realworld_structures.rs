@@ -1,31 +1,16 @@
-use std::hint::black_box;
 use std::time::Duration;
 
-use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
-use geometric_traits::{
-    impls::{CSR2D, SymmetricCSR2D},
-    prelude::{randomized_graphs::*, *},
-};
+mod common;
 
-type Graph = SymmetricCSR2D<CSR2D<usize, usize, usize>>;
+use common::{Graph, bench_exact_matchers, graph_label};
+use criterion::{Criterion, criterion_group, criterion_main};
+use geometric_traits::prelude::randomized_graphs::*;
 
 macro_rules! bench_all {
     ($group:expr, $label:expr, $graph:expr) => {{
         let g: &Graph = &$graph;
-        $group.bench_with_input(BenchmarkId::new("Blossom", &$label), g, |b, g| {
-            b.iter(|| black_box(g.blossom()));
-        });
-        $group.bench_with_input(BenchmarkId::new("MicaliVazirani", &$label), g, |b, g| {
-            b.iter(|| black_box(g.micali_vazirani()));
-        });
-        $group.bench_with_input(BenchmarkId::new("Blum", &$label), g, |b, g| {
-            b.iter(|| black_box(g.blum()));
-        });
+        bench_exact_matchers(&mut $group, &$label, g);
     }};
-}
-
-fn graph_label(g: &Graph) -> String {
-    format!("V{}_E{}", g.order(), g.number_of_defined_values() / 2)
 }
 
 fn bench_barabasi_albert_m2(c: &mut Criterion) {
