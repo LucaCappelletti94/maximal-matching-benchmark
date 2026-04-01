@@ -6,19 +6,16 @@
 
 ## Abstract
 
-We implemented and benchmark 13 static, unweighted maximum-cardinality matching algorithms and variants in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: four general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], Micali-Vazirani \[2\], and Blum \[14\], each in base, `KS1`, and `KS12` form, plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. The current versioned benchmark snapshot covers 307 graph configurations across 36 benchmark groups (3,704 algorithm/config measurements). Raw Criterion.rs results (about 36 hours of benchmarks on the documented machine, as of 2026-03-26) are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
+We implemented and benchmark four static, unweighted maximum-cardinality matching algorithms in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: three general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], and Micali-Vazirani \[2\], plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. The current versioned benchmark snapshot covers graph configurations across benchmark groups. Raw Criterion.rs results are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
 
-Winner breakdown (strict lowest-median, 307 configurations):
+Winner breakdown (strict lowest-median):
 
 | Family | Wins | Typical regime |
 |:--|--:|:--|
 | Gabow 1976 | 184 | Most small-to-medium general graphs |
 | Micali-Vazirani | 84 | Large sparse and windmill-like inputs |
-| Blum | 18 | Some regular sparse topologies |
 | Hopcroft-Karp | 12 | Sparse/imbalanced bipartite inputs |
 | Blossom | 9 | Small dense baseline |
-
-Karp-Sipser preprocessing changes the winner on only 25 of 307 configurations, but can cut star/path runtimes by 2-3 orders of magnitude.
 
 ## Table of Contents
 
@@ -41,35 +38,25 @@ Scope: **unweighted maximum-cardinality matching on static graphs** only.
 1. **Bipartite?** Use Hopcroft-Karp on sparse/imbalanced inputs. On small dense balanced inputs, Gabow 1976 can be faster.
 2. **General graph?** Start with Gabow 1976 (most common winner overall).
 3. **Large and sparse?** Benchmark Micali-Vazirani (dominates stars, paths, cycles, windmills at scale).
-4. **Regular lattice (grids, tori)?** Also try Blum.
-5. **Many degree-1/2 vertices?** Add `KS1` or `KS12` preprocessing (rarely changes the winner, but can cut star/path runtimes by orders of magnitude).
 
 ## Visual Summary
 
 <p align="center">
-  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, Gabow 1976, Micali-Vazirani, and Blum performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
+  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, Gabow 1976, and Micali-Vazirani performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
 </p>
 
-Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale). Red = Blossom, orange = Gabow 1976, blue = Micali-Vazirani, green = Blum.
-At V~100 and V~500, Gabow's orange polygon encloses most axes. By V~1,000, Micali-Vazirani pulls ahead on the sparse axes. At V~2,000, MV dominates most sparse topologies, while Blum remains closest on grids and tori.
+Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale). Red = Blossom, orange = Gabow 1976, blue = Micali-Vazirani.
+At V~100 and V~500, Gabow's orange polygon encloses most axes. By V~1,000, Micali-Vazirani pulls ahead on the sparse axes. At V~2,000, MV dominates most sparse topologies.
 
 Polygons are normalized log-scale within each panel (not comparable across panels).
 
 ### Scaling Behavior
 
 <p align="center">
-  <img src="docs/scaling_plot.svg" alt="Log-log plot of time vs vertices for representative star, grid, sparse random, dense complete, and Barabasi-Albert families for Blossom, Gabow 1976, Micali-Vazirani, and Blum" width="100%">
+  <img src="docs/scaling_plot.svg" alt="Log-log plot of time vs vertices for representative star, grid, sparse random, dense complete, and Barabasi-Albert families for Blossom, Gabow 1976, and Micali-Vazirani" width="100%">
 </p>
 
-On stars, MV separates earliest; on grids, Blum stays closest to MV; dense families compress the gap between all solvers.
-
-### Karp-Sipser Impact
-
-<p align="center">
-  <img src="docs/ks_impact.svg" alt="Radar panels showing KS1 and KS12 preprocessing speedup over each base algorithm across topologies and sizes" width="100%">
-</p>
-
-Blue = `KS1` (degree-1 rule), orange = `KS12` (degree-1+2). Preprocessing usually hurts (red zone) except on tree-like inputs: on the 20,000-vertex star it cuts runtime by 290x for Blossom and 3,358x for Blum. Overall, KS changes the suite winner on only 25 of 307 configurations.
+On stars, MV separates earliest; dense families compress the gap between all solvers.
 
 ### Bipartite Speedup
 
@@ -87,20 +74,16 @@ Gabow 1976 beats HK on small/dense balanced bipartite inputs; HK dominates at la
 
 **Micali-Vazirani** (1980 \[2\]) finds augmenting paths in phases via layered BFS with bridge detection. Time complexity: **O(E sqrt(V))**. Higher per-call overhead but scales better on sparse graphs. The `geometric-traits` implementation follows Peterson & Loui \[17\], ported from ggawryal/MV-matching (C++). To our knowledge, this is the first Rust implementation of Micali-Vazirani.
 
-**Blum** (1990 \[14\]) reduces augmenting path search to reachability in an auxiliary directed bipartite structure. Paper-level bound: **O(sqrt(V) (V+E))** with Gabow-Tarjan tree-set union, or **O(sqrt(V) (V+E) alpha(V+E,V))** with standard union-find. The `geometric-traits` implementation patches bugs in the published pseudocode (distinct from those reported by Dandeh and Lukovszki \[20\]) and includes fallback paths, so its documented worst case is **O(V (V+E))**. To our knowledge, this is the first public implementation of Blum's algorithm in any language. Empirically competitive on regular sparse topologies (grids, tori) at larger sizes.
-
 **Hopcroft-Karp** (1973 \[15\]) finds maximum cardinality matchings in bipartite graphs using layered BFS to discover shortest augmenting paths in phases. Time complexity: **O(E sqrt(V))**. Because it operates directly on the bipartite adjacency (rows = one partition, columns = the other), it avoids the overhead of general-graph blossom contraction entirely.
 
-**Karp-Sipser preprocessing** \[18, 19\] is benchmarked as two exact wrappers around each general algorithm. `KS1` greedily matches degree-1 vertices before the main solve; `KS12` also handles degree-2 vertices. Both preserve exact maximum-cardinality matching.
-
-| Property | Blossom | Gabow 1976 | Micali-Vazirani | Blum |
-|:--|:--|:--|:--|:--|
-| Time complexity | O(V^2 E) | O(V^3) | O(E sqrt(V)) | paper fast path: O(sqrt(V) (V+E)); union-find substitution: O(sqrt(V) (V+E) alpha(V+E,V)); impl worst case: O(V (V+E)) |
-| Graph type | General | General | General | General |
-| Typical role in this suite | Textbook baseline | Most common overall winner | Large sparse specialist | Niche sparse/regular specialist |
-| Small graph performance | Good | Best of the general algorithms on many inputs | Higher constant overhead | Higher constant overhead |
-| Large sparse graphs | O(V^3) when E = O(V) | Better constants, still cubic worst-case | Approximately O(V^1.5) for fixed degree | paper fast path: O(V^1.5); union-find substitution: O(V^1.5 * alpha(V)); documented impl worst case higher |
-| Best regime | Small dense baseline | Small-to-medium general graphs | Large sparse graphs | Some regular sparse graphs and tree-like graphs with KS |
+| Property | Blossom | Gabow 1976 | Micali-Vazirani |
+|:--|:--|:--|:--|
+| Time complexity | O(V^2 E) | O(V^3) | O(E sqrt(V)) |
+| Graph type | General | General | General |
+| Typical role in this suite | Textbook baseline | Most common overall winner | Large sparse specialist |
+| Small graph performance | Good | Best of the general algorithms on many inputs | Higher constant overhead |
+| Large sparse graphs | O(V^3) when E = O(V) | Better constants, still cubic worst-case | Approximately O(V^1.5) for fixed degree |
+| Best regime | Small dense baseline | Small-to-medium general graphs | Large sparse graphs |
 
 Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations, while `Gabow1976` wins the other 8 smaller or denser balanced cases. See the [Bipartite Matching Comparison](#bipartite-matching-comparison) section.
 
@@ -108,7 +91,7 @@ Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations,
 
 A maximum matching is the largest possible set of edges that do not share vertices.
 In plain terms, it answers: **how do I create as many disjoint one-to-one pairs as possible?**
-Blossom, Gabow 1976, Micali-Vazirani, and Blum, plus their Karp-Sipser variants, solve this problem on **general graphs**, so they work even when
+Blossom, Gabow 1976, and Micali-Vazirani solve this problem on **general graphs**, so they work even when
 the compatibility graph is not bipartite and contains odd cycles.
 
 | Real-world task | Matching interpretation |
@@ -120,7 +103,7 @@ the compatibility graph is not bipartite and contains odd cycles.
 | Graph coarsening and preprocessing | Matching can be used to merge or pair nearby vertices before partitioning, sparsification, or multilevel graph algorithms. |
 | Resource pairing in fleets, robotics, or sensor systems | Vertices are units; an edge means two units can be paired under distance, compatibility, or safety constraints. |
 
-All five algorithm families compute maximum-cardinality matchings; see the [Decision Guide](#decision-guide) for when to use each. If your problem is weighted or preference-based, a different formulation may fit better:
+All algorithm families compute maximum-cardinality matchings; see the [Decision Guide](#decision-guide) for when to use each. If your problem is weighted or preference-based, a different formulation may fit better:
 
 - **Bipartite cardinality matching:** often solved with specialized bipartite algorithms such as Hopcroft-Karp.
 - **Weighted one-to-one assignment:** use maximum-weight matching or Hungarian/min-cost-flow style methods.
@@ -169,22 +152,22 @@ The benchmarks use the following graph families. Most generators are from the `g
 
 ## Headline Results
 
-The 12 largest **winner-vs-runner-up** speedup ratios across the full 307-configuration suite, using the versioned `median_ns` snapshot archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+The 12 largest **winner-vs-runner-up** speedup ratios across the full suite, using the versioned `median_ns` snapshot archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
 
 | Family | Config | \|V\| | \|E\| | Winner | Runner-up | Winner Time | Runner-up Time | Speedup |
 |:--|:--|--:|--:|:--|:--|--:|--:|--:|
-| Imbalanced Bipartite | `50x500_V550_E25000` | 550 | 25000 | HopcroftKarp | MicaliVazirani | **26.53 µs** | 794.18 µs | **29.9x** |
-| Imbalanced Bipartite | `100x1000_V1100_E100000` | 1100 | 100000 | HopcroftKarp | MicaliVazirani | **97.77 µs** | 2.87 ms | **29.4x** |
-| Imbalanced Bipartite | `20x200_V220_E4000` | 220 | 4000 | HopcroftKarp | Gabow1976 | **5.10 µs** | 126.63 µs | **24.9x** |
-| Imbalanced Bipartite | `10x100_V110_E1000` | 110 | 1000 | HopcroftKarp | Gabow1976 | **1.49 µs** | 20.75 µs | **14.0x** |
-| Cycle | `cycle_V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.51 µs** | 8.64 µs | **3.4x** |
-| Hexagonal Lattice | `hexagonal_lattice_V96_E131` | 96 | 131 | Gabow1976 | Blossom | **2.39 µs** | 8.21 µs | **3.4x** |
-| Torus | `torus_V100_E200` | 100 | 200 | Gabow1976 | Blossom | **2.64 µs** | 8.89 µs | **3.4x** |
-| Grid | `grid_V100_E180` | 100 | 180 | Gabow1976 | Blossom | **2.63 µs** | 8.84 µs | **3.4x** |
-| Extreme Hypercube | `d8_V256_E1024` | 256 | 1024 | Gabow1976 | Blossom | **13.27 µs** | 43.85 µs | **3.3x** |
-| Wheel | `wheel_V100_E198` | 100 | 198 | Gabow1976 | Blossom | **2.72 µs** | 8.92 µs | **3.3x** |
-| Extreme Cycle | `V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.39 µs** | 7.69 µs | **3.2x** |
-| Triangular Lattice | `triangular_lattice_V100_E261` | 100 | 261 | Gabow1976 | Blossom | **2.87 µs** | 9.18 µs | **3.2x** |
+| Imbalanced Bipartite | `50x500_V550_E25000` | 550 | 25000 | HopcroftKarp | MicaliVazirani | **26.53 us** | 794.18 us | **29.9x** |
+| Imbalanced Bipartite | `100x1000_V1100_E100000` | 1100 | 100000 | HopcroftKarp | MicaliVazirani | **97.77 us** | 2.87 ms | **29.4x** |
+| Imbalanced Bipartite | `20x200_V220_E4000` | 220 | 4000 | HopcroftKarp | Gabow1976 | **5.10 us** | 126.63 us | **24.9x** |
+| Imbalanced Bipartite | `10x100_V110_E1000` | 110 | 1000 | HopcroftKarp | Gabow1976 | **1.49 us** | 20.75 us | **14.0x** |
+| Cycle | `cycle_V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.51 us** | 8.64 us | **3.4x** |
+| Hexagonal Lattice | `hexagonal_lattice_V96_E131` | 96 | 131 | Gabow1976 | Blossom | **2.39 us** | 8.21 us | **3.4x** |
+| Torus | `torus_V100_E200` | 100 | 200 | Gabow1976 | Blossom | **2.64 us** | 8.89 us | **3.4x** |
+| Grid | `grid_V100_E180` | 100 | 180 | Gabow1976 | Blossom | **2.63 us** | 8.84 us | **3.4x** |
+| Extreme Hypercube | `d8_V256_E1024` | 256 | 1024 | Gabow1976 | Blossom | **13.27 us** | 43.85 us | **3.3x** |
+| Wheel | `wheel_V100_E198` | 100 | 198 | Gabow1976 | Blossom | **2.72 us** | 8.92 us | **3.3x** |
+| Extreme Cycle | `V100_E100` | 100 | 100 | Gabow1976 | Blossom | **2.39 us** | 7.69 us | **3.2x** |
+| Triangular Lattice | `triangular_lattice_V100_E261` | 100 | 261 | Gabow1976 | Blossom | **2.87 us** | 9.18 us | **3.2x** |
 
 Winner vs runner-up for each configuration. As a top-12 ranking, it overrepresents extreme cases; see the [Decision Guide](#decision-guide) for broader guidance.
 
@@ -194,43 +177,43 @@ The last column reports `(best base general-algorithm median) / (HK median)`: ab
 
 ### Complete Bipartite K_{n,n}
 
-| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
-|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
-| 10 x 10 | 20 | 100 | 783 ns | **493 ns** | 917 ns | 5.79 µs | 5.82 µs | Gabow1976 | 0.6x |
-| 25 x 25 | 50 | 625 | 2.37 µs | **2.06 µs** | 3.86 µs | 22.86 µs | 24.03 µs | Gabow1976 | 0.9x |
-| 50 x 50 | 100 | 2,500 | 6.91 µs | **6.89 µs** | 13.03 µs | 69.28 µs | 70.15 µs | Gabow1976 | 1.0x |
-| 100 x 100 | 200 | 10,000 | **21.48 µs** | 25.39 µs | 48.61 µs | 238.10 µs | 240.25 µs | HopcroftKarp | 1.2x |
-| 200 x 200 | 400 | 40,000 | **79.92 µs** | 97.71 µs | 186.35 µs | 1.85 ms | 828.10 µs | HopcroftKarp | 1.2x |
-| 500 x 500 | 1,000 | 250,000 | **444.82 µs** | 612.33 µs | 1.19 ms | 11.45 ms | 4.83 ms | HopcroftKarp | 1.4x |
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 10 | 20 | 100 | 783 ns | **493 ns** | 917 ns | 5.79 us | Gabow1976 | 0.6x |
+| 25 x 25 | 50 | 625 | 2.37 us | **2.06 us** | 3.86 us | 22.86 us | Gabow1976 | 0.9x |
+| 50 x 50 | 100 | 2,500 | 6.91 us | **6.89 us** | 13.03 us | 69.28 us | Gabow1976 | 1.0x |
+| 100 x 100 | 200 | 10,000 | **21.48 us** | 25.39 us | 48.61 us | 238.10 us | HopcroftKarp | 1.2x |
+| 200 x 200 | 400 | 40,000 | **79.92 us** | 97.71 us | 186.35 us | 1.85 ms | HopcroftKarp | 1.2x |
+| 500 x 500 | 1,000 | 250,000 | **444.82 us** | 612.33 us | 1.19 ms | 11.45 ms | HopcroftKarp | 1.4x |
 
 ### Crown Graphs C_n
 
-| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
-|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
-| 10 x 10 | 20 | 90 | 754 ns | **468 ns** | 884 ns | 5.59 µs | 5.84 µs | Gabow1976 | 0.6x |
-| 25 x 25 | 50 | 600 | 3.16 µs | **2.01 µs** | 3.77 µs | 28.43 µs | 37.21 µs | Gabow1976 | 0.6x |
-| 50 x 50 | 100 | 2,450 | 6.81 µs | **6.69 µs** | 12.95 µs | 68.73 µs | 70.47 µs | Gabow1976 | 1.0x |
-| 100 x 100 | 200 | 9,900 | **21.79 µs** | 24.83 µs | 48.61 µs | 244.61 µs | 237.77 µs | HopcroftKarp | 1.1x |
-| 200 x 200 | 400 | 39,800 | **79.86 µs** | 97.72 µs | 210.61 µs | 884.81 µs | 825.57 µs | HopcroftKarp | 1.2x |
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 10 | 20 | 90 | 754 ns | **468 ns** | 884 ns | 5.59 us | Gabow1976 | 0.6x |
+| 25 x 25 | 50 | 600 | 3.16 us | **2.01 us** | 3.77 us | 28.43 us | Gabow1976 | 0.6x |
+| 50 x 50 | 100 | 2,450 | 6.81 us | **6.69 us** | 12.95 us | 68.73 us | Gabow1976 | 1.0x |
+| 100 x 100 | 200 | 9,900 | **21.79 us** | 24.83 us | 48.61 us | 244.61 us | HopcroftKarp | 1.1x |
+| 200 x 200 | 400 | 39,800 | **79.86 us** | 97.72 us | 210.61 us | 884.81 us | HopcroftKarp | 1.2x |
 
 ### Random Sparse Bipartite (avg degree ~6)
 
-| n | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
-|--:|--:|--:|--:|--:|--:|--:|--:|:--|--:|
-| 50 | 100 | 291 | 5.09 µs | **3.13 µs** | 9.35 µs | 29.24 µs | 43.06 µs | Gabow1976 | 0.6x |
-| 100 | 200 | 621 | 14.49 µs | **9.45 µs** | 31.73 µs | 78.80 µs | 127.07 µs | Gabow1976 | 0.7x |
-| 200 | 400 | 1,206 | **34.49 µs** | 38.44 µs | 125.49 µs | 183.37 µs | 470.31 µs | HopcroftKarp | 1.1x |
-| 500 | 1,000 | 2,983 | **105.21 µs** | 193.04 µs | 717.98 µs | 512.13 µs | 1.08 ms | HopcroftKarp | 1.8x |
-| 1,000 | 2,000 | 5,944 | **316.40 µs** | 840.25 µs | 2.88 ms | 1.11 ms | 3.34 ms | HopcroftKarp | 2.7x |
+| n | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Winner | Best-General / HK |
+|--:|--:|--:|--:|--:|--:|--:|:--|--:|
+| 50 | 100 | 291 | 5.09 us | **3.13 us** | 9.35 us | 29.24 us | Gabow1976 | 0.6x |
+| 100 | 200 | 621 | 14.49 us | **9.45 us** | 31.73 us | 78.80 us | Gabow1976 | 0.7x |
+| 200 | 400 | 1,206 | **34.49 us** | 38.44 us | 125.49 us | 183.37 us | HopcroftKarp | 1.1x |
+| 500 | 1,000 | 2,983 | **105.21 us** | 193.04 us | 717.98 us | 512.13 us | HopcroftKarp | 1.8x |
+| 1,000 | 2,000 | 5,944 | **316.40 us** | 840.25 us | 2.88 ms | 1.11 ms | HopcroftKarp | 2.7x |
 
 ### Imbalanced Bipartite K_{m, 10m}
 
-| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Blum | Winner | Best-General / HK |
-|:--|--:|--:|--:|--:|--:|--:|--:|:--|--:|
-| 10 x 100 | 110 | 1,000 | **1.49 µs** | 20.75 µs | 44.68 µs | 44.80 µs | 583.46 µs | HopcroftKarp | 14.0x |
-| 20 x 200 | 220 | 4,000 | **5.10 µs** | 126.63 µs | 231.34 µs | 157.52 µs | 3.76 ms | HopcroftKarp | 24.9x |
-| 50 x 500 | 550 | 25,000 | **26.53 µs** | 1.64 ms | 2.79 ms | 794.18 µs | 53.08 ms | HopcroftKarp | 29.9x |
-| 100 x 1,000 | 1,100 | 100,000 | **97.77 µs** | 11.65 ms | 19.63 ms | 2.87 ms | 399.91 ms | HopcroftKarp | 29.4x |
+| Config | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Winner | Best-General / HK |
+|:--|--:|--:|--:|--:|--:|--:|:--|--:|
+| 10 x 100 | 110 | 1,000 | **1.49 us** | 20.75 us | 44.68 us | 44.80 us | HopcroftKarp | 14.0x |
+| 20 x 200 | 220 | 4,000 | **5.10 us** | 126.63 us | 231.34 us | 157.52 us | HopcroftKarp | 24.9x |
+| 50 x 500 | 550 | 25,000 | **26.53 us** | 1.64 ms | 2.79 ms | 794.18 us | HopcroftKarp | 29.9x |
+| 100 x 1,000 | 1,100 | 100,000 | **97.77 us** | 11.65 ms | 19.63 ms | 2.87 ms | HopcroftKarp | 29.4x |
 
 Across all four bipartite groups: Gabow 1976 wins small/dense balanced cases, HK wins larger and all imbalanced cases (14-30x).
 
@@ -238,16 +221,15 @@ Across all four bipartite groups: Gabow 1976 wins small/dense balanced cases, HK
 
 - **Single implementations.** The Blossom implementation uses linear-scan blossom contraction. A union-find-based contraction would have a smaller constant factor and could shift crossover points.
 - **No external baselines.** We do not compare against other maximum cardinality matching implementations. The crossover points apply to these specific `geometric-traits` implementations.
-- **Limited preprocessing menu.** The suite benchmarks only the built-in `KS1` and `KS12` Karp-Sipser wrappers. Other preprocessing rules or dynamic reduction schedules could shift the observed winner map.
 - **Single random seed.** Random graph benchmarks use one fixed seed (`42`) per parameter tuple for reproducibility. Criterion provides many timing samples for that instance, but it does not characterize instance-to-instance variance across different random draws.
-- **Fixed algorithm order.** Algorithms always run in the same order (Blossom variants first, then Gabow, MV, Blum). Earlier algorithms get a cooler CPU and cleaner allocator state. Unlikely to affect large gaps but may matter for modest leads.
-- **CPU boost enabled.** Thermal drift during an approximately 36-hour sequential run means early benchmarks may run at higher boost clocks than later ones.
+- **Fixed algorithm order.** Algorithms always run in the same order (Blossom variants first, then Gabow, MV). Earlier algorithms get a cooler CPU and cleaner allocator state. Unlikely to affect large gaps but may matter for modest leads.
+- **CPU boost enabled.** Thermal drift during a sequential run means early benchmarks may run at higher boost clocks than later ones.
 - **Bipartite representation confound.** Hopcroft-Karp uses a compact CSR2D (n rows, each edge stored once); general algorithms use SymmetricCSR2D (2n rows, each edge stored twice). Part of HK's speedup is the more cache-friendly representation. The reported HK speedups are upper bounds on the pure algorithmic advantage.
 
 ## Methodology
 
 - **Framework:** [Criterion.rs](https://github.com/bheisler/criterion.rs) 0.8 with HTML reports
-- **Benchmarked variants:** 4 base general algorithms x {base, `KS1`, `KS12`} = 12 general variants, plus Hopcroft-Karp on bipartite suites
+- **Benchmarked variants:** 3 general algorithms (Blossom, Gabow 1976, Micali-Vazirani), plus Hopcroft-Karp on bipartite suites
 - **Reporting metric:** tables round `median.point_estimate`; winner counts use strict lowest-median
 - **Timing:** Criterion sample sizes of 10, 30, or 100 with per-group measurement windows of 10, 20, 30, or 60 seconds; some small groups still use Criterion defaults where no override is set
 - **Graph representation:** general algorithms use `SymmetricCSR2D<CSR2D<usize, usize, usize>>`; Hopcroft-Karp uses a non-symmetric `CSR2D<usize, usize, usize>`
@@ -268,7 +250,6 @@ Across all four bipartite groups: Gabow 1976 wins small/dense balanced cases, HK
 | `realworld_structures` | 7 | 48 | Network science graph models |
 | `extreme_cases` | 7 | 50 | Pathological and structured graphs |
 | `bipartite` | 4 | 20 | Hopcroft-Karp vs general algorithms |
-| **Total** | **36** | **307** | **3,704 algorithm/config measurements** |
 
 ### Machine
 
@@ -276,7 +257,7 @@ AMD Ryzen Threadripper PRO 5975WX (32 cores), 1 TiB RAM, Ubuntu 24.04, boost ena
 
 ## Reproducing
 
-A full run takes **~36 hours** on the documented machine. Pre-built Criterion output is on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+Pre-built Criterion output is on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
 
 ```bash
 # Browse archived results
@@ -317,16 +298,8 @@ CI runs `cargo bench --benches --no-run` (compile check) and `cargo test --bench
 
 \[13\] P. Erdos, A. Renyi, and V. T. Sos, "On a problem of graph theory," *Studia Scientiarum Mathematicarum Hungarica*, vol. 1, pp. 215-235, 1966.
 
-\[14\] N. Blum, "A New Approach to Maximum Matching in General Graphs," in *Automata, Languages and Programming: 17th International Colloquium (ICALP '90)*, LNCS 443, pp. 586-597, 1990. [doi:10.1007/BFb0032060](https://doi.org/10.1007/BFb0032060). Revised manuscript: N. Blum, "Maximum Matching in General Graphs without Explicit Consideration of Blossoms Revisited," *arXiv:1509.04927*, 2015. [arXiv:1509.04927](https://arxiv.org/abs/1509.04927)
-
 \[15\] J. E. Hopcroft and R. M. Karp, "An n^(5/2) Algorithm for Maximum Matchings in Bipartite Graphs," *SIAM Journal on Computing*, vol. 2, no. 4, pp. 225-231, 1973. [doi:10.1137/0202019](https://doi.org/10.1137/0202019)
 
 \[16\] H. N. Gabow, "An Efficient Implementation of Edmonds' Algorithm for Maximum Matching on Graphs," *Journal of the ACM*, vol. 23, no. 2, pp. 221-234, 1976. [doi:10.1145/321941.321942](https://doi.org/10.1145/321941.321942)
 
 \[17\] P. A. Peterson and M. C. Loui, "The General Maximum Matching Algorithm of Micali and Vazirani," *Algorithmica*, vol. 3, pp. 511-533, 1988. [doi:10.1007/BF01762129](https://doi.org/10.1007/BF01762129)
-
-\[18\] R. M. Karp and M. Sipser, "Maximum Matchings in Sparse Random Graphs," in *Proc. 22nd Annual IEEE Symposium on Foundations of Computer Science (FOCS)*, pp. 364-375, 1981. [doi:10.1109/SFCS.1981.21](https://doi.org/10.1109/SFCS.1981.21)
-
-\[19\] G. B. Mertzios, A. Nichterlein, and R. Niedermeier, "The Power of Linear-Time Data Reduction for Maximum Matching," *Algorithmica*, vol. 82, pp. 3521-3565, 2020. [doi:10.1007/s00453-020-00736-0](https://doi.org/10.1007/s00453-020-00736-0)
-
-\[20\] A. Dandeh and T. Lukovszki, "Experimental Evaluation of Blum's Maximum Matching Algorithm in General Graphs," in *Proc. Italian Conference on Theoretical Computer Science (ICTCS)*, CEUR Workshop Proceedings, vol. 4039, pp. 16-27, 2025. [ceur-ws.org/Vol-4039/paper23.pdf](https://ceur-ws.org/Vol-4039/paper23.pdf)

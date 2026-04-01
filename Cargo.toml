@@ -8,7 +8,7 @@ publish = false
 bench = false
 
 [dependencies]
-geometric-traits = { git = "https://github.com/earth-metabolome-initiative/geometric-traits", rev = "c8ddcb4" }
+geometric-traits = { git = "https://github.com/earth-metabolome-initiative/geometric-traits", rev = "30c20cf" }
 
 [dev-dependencies]
 criterion = { version = "0.8", features = ["html_reports"] }

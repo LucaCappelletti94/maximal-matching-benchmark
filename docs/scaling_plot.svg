@@ -51,15 +51,6 @@
 <circle cx="162.1" cy="148.8" r="1.8" fill="#2060D0"/>
 <circle cx="181.0" cy="141.3" r="1.8" fill="#2060D0"/>
 <circle cx="199.9" cy="134.2" r="1.8" fill="#2060D0"/>
-<path d="M36.7,168.0 L55.6,155.4 L99.4,124.5 L118.3,109.2 L137.2,95.3 L162.1,76.2 L181.0,61.6 L199.9,46.7" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="36.7" cy="168.0" r="1.8" fill="#20A020"/>
-<circle cx="55.6" cy="155.4" r="1.8" fill="#20A020"/>
-<circle cx="99.4" cy="124.5" r="1.8" fill="#20A020"/>
-<circle cx="118.3" cy="109.2" r="1.8" fill="#20A020"/>
-<circle cx="137.2" cy="95.3" r="1.8" fill="#20A020"/>
-<circle cx="162.1" cy="76.2" r="1.8" fill="#20A020"/>
-<circle cx="181.0" cy="61.6" r="1.8" fill="#20A020"/>
-<circle cx="199.9" cy="46.7" r="1.8" fill="#20A020"/>
 <text x="329" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Grid (E ~ 2V)</text>
 <line x1="249.9" y1="37" x2="249.9" y2="217" stroke="#eee" stroke-width="0.5"/>
 <text x="249.9" y="226" text-anchor="middle" font-size="6.5" fill="#999">10</text>
@@ -118,18 +109,6 @@
 <circle cx="384.6" cy="107.2" r="1.8" fill="#2060D0"/>
 <circle cx="396.0" cy="105.3" r="1.8" fill="#2060D0"/>
 <circle cx="412.8" cy="96.2" r="1.8" fill="#2060D0"/>
-<path d="M247.4,177.2 L271.5,164.2 L287.4,156.3 L304.2,151.4 L323.3,137.4 L341.4,132.0 L359.1,122.4 L375.1,109.5 L384.6,103.6 L396.0,100.7 L412.8,90.6" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="247.4" cy="177.2" r="1.8" fill="#20A020"/>
-<circle cx="271.5" cy="164.2" r="1.8" fill="#20A020"/>
-<circle cx="287.4" cy="156.3" r="1.8" fill="#20A020"/>
-<circle cx="304.2" cy="151.4" r="1.8" fill="#20A020"/>
-<circle cx="323.3" cy="137.4" r="1.8" fill="#20A020"/>
-<circle cx="341.4" cy="132.0" r="1.8" fill="#20A020"/>
-<circle cx="359.1" cy="122.4" r="1.8" fill="#20A020"/>
-<circle cx="375.1" cy="109.5" r="1.8" fill="#20A020"/>
-<circle cx="384.6" cy="103.6" r="1.8" fill="#20A020"/>
-<circle cx="396.0" cy="100.7" r="1.8" fill="#20A020"/>
-<circle cx="412.8" cy="90.6" r="1.8" fill="#20A020"/>
 <text x="541" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Erdős-Rényi (d ~ 6)</text>
 <line x1="459.5" y1="37" x2="459.5" y2="217" stroke="#eee" stroke-width="0.5"/>
 <text x="459.5" y="226" text-anchor="middle" font-size="6.5" fill="#999">10</text>
@@ -193,19 +172,6 @@
 <circle cx="608.1" cy="104.4" r="1.8" fill="#2060D0"/>
 <circle cx="617.8" cy="99.2" r="1.8" fill="#2060D0"/>
 <circle cx="624.7" cy="90.8" r="1.8" fill="#2060D0"/>
-<path d="M459.5,180.3 L476.1,173.9 L498.0,163.1 L514.6,151.8 L531.2,131.0 L553.1,123.9 L569.7,116.5 L586.2,105.2 L595.9,79.5 L608.1,90.7 L617.8,80.0 L624.7,47.4" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="459.5" cy="180.3" r="1.8" fill="#20A020"/>
-<circle cx="476.1" cy="173.9" r="1.8" fill="#20A020"/>
-<circle cx="498.0" cy="163.1" r="1.8" fill="#20A020"/>
-<circle cx="514.6" cy="151.8" r="1.8" fill="#20A020"/>
-<circle cx="531.2" cy="131.0" r="1.8" fill="#20A020"/>
-<circle cx="553.1" cy="123.9" r="1.8" fill="#20A020"/>
-<circle cx="569.7" cy="116.5" r="1.8" fill="#20A020"/>
-<circle cx="586.2" cy="105.2" r="1.8" fill="#20A020"/>
-<circle cx="595.9" cy="79.5" r="1.8" fill="#20A020"/>
-<circle cx="608.1" cy="90.7" r="1.8" fill="#20A020"/>
-<circle cx="617.8" cy="80.0" r="1.8" fill="#20A020"/>
-<circle cx="624.7" cy="47.4" r="1.8" fill="#20A020"/>
 <text x="753" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Complete</text>
 <line x1="677.2" y1="37" x2="677.2" y2="217" stroke="#eee" stroke-width="0.5"/>
 <text x="677.2" y="226" text-anchor="middle" font-size="6.5" fill="#999">10</text>
@@ -249,15 +215,6 @@
 <circle cx="812.3" cy="84.4" r="1.8" fill="#2060D0"/>
 <circle cx="823.7" cy="76.9" r="1.8" fill="#2060D0"/>
 <circle cx="832.6" cy="70.9" r="1.8" fill="#2060D0"/>
-<path d="M677.2,170.2 L704.7,156.3 L741.1,134.6 L768.6,115.4 L796.2,97.0 L812.3,85.2 L823.7,77.7 L832.6,71.4" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="677.2" cy="170.2" r="1.8" fill="#20A020"/>
-<circle cx="704.7" cy="156.3" r="1.8" fill="#20A020"/>
-<circle cx="741.1" cy="134.6" r="1.8" fill="#20A020"/>
-<circle cx="768.6" cy="115.4" r="1.8" fill="#20A020"/>
-<circle cx="796.2" cy="97.0" r="1.8" fill="#20A020"/>
-<circle cx="812.3" cy="85.2" r="1.8" fill="#20A020"/>
-<circle cx="823.7" cy="77.7" r="1.8" fill="#20A020"/>
-<circle cx="832.6" cy="71.4" r="1.8" fill="#20A020"/>
 <text x="223" y="267" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Barabási-Albert (m=2)</text>
 <line x1="169.2" y1="271" x2="169.2" y2="451" stroke="#eee" stroke-width="0.5"/>
 <text x="169.2" y="460" text-anchor="middle" font-size="6.5" fill="#999">100</text>
@@ -300,14 +257,6 @@
 <circle cx="248.5" cy="363.4" r="1.8" fill="#2060D0"/>
 <circle cx="272.4" cy="351.4" r="1.8" fill="#2060D0"/>
 <circle cx="304.0" cy="335.7" r="1.8" fill="#2060D0"/>
-<path d="M145.3,400.2 L169.2,390.0 L193.1,372.6 L224.6,351.7 L248.5,332.0 L272.4,311.3 L304.0,283.9" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="145.3" cy="400.2" r="1.8" fill="#20A020"/>
-<circle cx="169.2" cy="390.0" r="1.8" fill="#20A020"/>
-<circle cx="193.1" cy="372.6" r="1.8" fill="#20A020"/>
-<circle cx="224.6" cy="351.7" r="1.8" fill="#20A020"/>
-<circle cx="248.5" cy="332.0" r="1.8" fill="#20A020"/>
-<circle cx="272.4" cy="311.3" r="1.8" fill="#20A020"/>
-<circle cx="304.0" cy="283.9" r="1.8" fill="#20A020"/>
 <text x="435" y="267" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Hex. Lattice</text>
 <line x1="364.4" y1="271" x2="364.4" y2="451" stroke="#eee" stroke-width="0.5"/>
 <text x="364.4" y="460" text-anchor="middle" font-size="6.5" fill="#999">10</text>
@@ -368,18 +317,6 @@
 <circle cx="492.9" cy="343.1" r="1.8" fill="#2060D0"/>
 <circle cx="504.3" cy="337.0" r="1.8" fill="#2060D0"/>
 <circle cx="519.1" cy="328.9" r="1.8" fill="#2060D0"/>
-<path d="M353.0,414.8 L374.9,404.2 L389.0,396.0 L415.0,382.9 L435.5,371.5 L452.4,362.6 L467.7,353.8 L482.7,345.3 L492.9,338.5 L504.3,331.9 L519.1,322.7" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="353.0" cy="414.8" r="1.8" fill="#20A020"/>
-<circle cx="374.9" cy="404.2" r="1.8" fill="#20A020"/>
-<circle cx="389.0" cy="396.0" r="1.8" fill="#20A020"/>
-<circle cx="415.0" cy="382.9" r="1.8" fill="#20A020"/>
-<circle cx="435.5" cy="371.5" r="1.8" fill="#20A020"/>
-<circle cx="452.4" cy="362.6" r="1.8" fill="#20A020"/>
-<circle cx="467.7" cy="353.8" r="1.8" fill="#20A020"/>
-<circle cx="482.7" cy="345.3" r="1.8" fill="#20A020"/>
-<circle cx="492.9" cy="338.5" r="1.8" fill="#20A020"/>
-<circle cx="504.3" cy="331.9" r="1.8" fill="#20A020"/>
-<circle cx="519.1" cy="322.7" r="1.8" fill="#20A020"/>
 <text x="647" y="267" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">Windmill K4</text>
 <line x1="565.5" y1="271" x2="565.5" y2="451" stroke="#eee" stroke-width="0.5"/>
 <text x="565.5" y="460" text-anchor="middle" font-size="6.5" fill="#999">10</text>
@@ -443,26 +380,11 @@
 <circle cx="714.1" cy="351.3" r="1.8" fill="#2060D0"/>
 <circle cx="723.8" cy="346.8" r="1.8" fill="#2060D0"/>
 <circle cx="730.7" cy="343.7" r="1.8" fill="#2060D0"/>
-<path d="M565.5,413.5 L580.9,405.5 L603.5,390.5 L620.6,378.6 L637.1,365.7 L659.0,347.2 L675.7,332.1 L692.2,316.8 L701.9,308.0 L714.1,296.7 L723.8,287.6 L730.7,281.3" fill="none" stroke="#20A020" stroke-width="1.4" opacity="0.8"/>
-<circle cx="565.5" cy="413.5" r="1.8" fill="#20A020"/>
-<circle cx="580.9" cy="405.5" r="1.8" fill="#20A020"/>
-<circle cx="603.5" cy="390.5" r="1.8" fill="#20A020"/>
-<circle cx="620.6" cy="378.6" r="1.8" fill="#20A020"/>
-<circle cx="637.1" cy="365.7" r="1.8" fill="#20A020"/>
-<circle cx="659.0" cy="347.2" r="1.8" fill="#20A020"/>
-<circle cx="675.7" cy="332.1" r="1.8" fill="#20A020"/>
-<circle cx="692.2" cy="316.8" r="1.8" fill="#20A020"/>
-<circle cx="701.9" cy="308.0" r="1.8" fill="#20A020"/>
-<circle cx="714.1" cy="296.7" r="1.8" fill="#20A020"/>
-<circle cx="723.8" cy="287.6" r="1.8" fill="#20A020"/>
-<circle cx="730.7" cy="281.3" r="1.8" fill="#20A020"/>
 <rect x="275" y="477" width="10" height="10" fill="rgba(224,48,48,0.8)" stroke="#E03030" stroke-width="1" rx="2"/>
 <text x="289" y="486" font-size="9" fill="#555">Blossom</text>
 <rect x="347" y="477" width="10" height="10" fill="rgba(230,159,0,0.8)" stroke="#E69F00" stroke-width="1" rx="2"/>
 <text x="361" y="486" font-size="9" fill="#555">Gabow 1976</text>
 <rect x="437" y="477" width="10" height="10" fill="rgba(32,96,208,0.8)" stroke="#2060D0" stroke-width="1" rx="2"/>
 <text x="451" y="486" font-size="9" fill="#555">Micali-Vazirani</text>
-<rect x="557" y="477" width="10" height="10" fill="rgba(32,160,32,0.8)" stroke="#20A020" stroke-width="1" rx="2"/>
-<text x="571" y="486" font-size="9" fill="#555">Blum 1990</text>
 <text x="862" y="493" text-anchor="end" font-size="7" fill="#bbb">github.com/LucaCappelletti94/maximal-matching-benchmark</text>
 </svg>
