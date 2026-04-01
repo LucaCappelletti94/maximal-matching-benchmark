@@ -19,17 +19,32 @@ Winner breakdown (strict lowest-median):
 
 ## Table of Contents
 
-- [Decision Guide](#decision-guide)
-- [Visual Summary](#visual-summary)
-- [Algorithms Overview](#algorithms-overview)
-- [What Problems These Algorithms Solve](#what-problems-these-algorithms-solve)
-- [Graph Types](#graph-types)
-- [Headline Results](#headline-results)
-- [Bipartite Matching Comparison](#bipartite-matching-comparison)
-- [Threats to Validity](#threats-to-validity)
-- [Methodology](#methodology)
-- [Reproducing](#reproducing)
-- [References](#references)
+- [Maximum Matching Benchmark Suite](#maximum-matching-benchmark-suite)
+  - [Abstract](#abstract)
+  - [Table of Contents](#table-of-contents)
+  - [Decision Guide](#decision-guide)
+  - [Visual Summary](#visual-summary)
+    - [Scaling Behavior](#scaling-behavior)
+    - [Bipartite Speedup](#bipartite-speedup)
+  - [Algorithms Overview](#algorithms-overview)
+  - [What Problems These Algorithms Solve](#what-problems-these-algorithms-solve)
+  - [Graph Types](#graph-types)
+    - [Classical Structures](#classical-structures)
+    - [Bipartite Structures](#bipartite-structures)
+    - [Composite Structures](#composite-structures)
+    - [Random Graph Models](#random-graph-models)
+  - [Headline Results](#headline-results)
+  - [Bipartite Matching Comparison](#bipartite-matching-comparison)
+    - [Complete Bipartite K\_{n,n}](#complete-bipartite-k_nn)
+    - [Crown Graphs C\_n](#crown-graphs-c_n)
+    - [Random Sparse Bipartite (avg degree =6)](#random-sparse-bipartite-avg-degree-6)
+    - [Imbalanced Bipartite K\_{m, 10m}](#imbalanced-bipartite-k_m-10m)
+  - [Threats to Validity](#threats-to-validity)
+  - [Methodology](#methodology)
+    - [Benchmark Suites](#benchmark-suites)
+    - [Machine](#machine)
+  - [Reproducing](#reproducing)
+  - [References](#references)
 
 ## Decision Guide
 
@@ -42,11 +57,11 @@ Scope: **unweighted maximum-cardinality matching on static graphs** only.
 ## Visual Summary
 
 <p align="center">
-  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, Gabow 1976, and Micali-Vazirani performance across topologies at V~100, V~500, V~1000, and V~2000" width="100%">
+  <img src="docs/radar_triptych.svg" alt="Radar chart showing Blossom, Gabow 1976, and Micali-Vazirani performance across topologies at V=100, V=500, V=1000, and V=2000" width="100%">
 </p>
 
 Each axis represents a graph topology; a larger polygon indicates a faster algorithm (log-scale). Red = Blossom, orange = Gabow 1976, blue = Micali-Vazirani.
-At V~100 and V~500, Gabow's orange polygon encloses most axes. By V~1,000, Micali-Vazirani pulls ahead on the sparse axes. At V~2,000, MV dominates most sparse topologies.
+At V=100 and V=500, Gabow's orange polygon encloses most axes. By V=1,000, Micali-Vazirani pulls ahead on the sparse axes. At V=2,000, MV dominates most sparse topologies.
 
 Polygons are normalized log-scale within each panel (not comparable across panels).
 
@@ -196,7 +211,7 @@ The last column reports `(best base general-algorithm median) / (HK median)`: ab
 | 100 x 100 | 200 | 9,900 | **21.79 us** | 24.83 us | 48.61 us | 244.61 us | HopcroftKarp | 1.1x |
 | 200 x 200 | 400 | 39,800 | **79.86 us** | 97.72 us | 210.61 us | 884.81 us | HopcroftKarp | 1.2x |
 
-### Random Sparse Bipartite (avg degree ~6)
+### Random Sparse Bipartite (avg degree =6)
 
 | n | \|V\| | \|E\| | HK | Gabow 1976 | Blossom | MV | Winner | Best-General / HK |
 |--:|--:|--:|--:|--:|--:|--:|:--|--:|
