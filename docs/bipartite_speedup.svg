@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 380" width="870" height="380" font-family="system-ui, -apple-system, sans-serif">
 <rect width="870" height="380" fill="#fafafa" rx="8"/>
-<text x="435.0" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a1a2e">Hopcroft-Karp Speedup over Best Base Algorithm on Bipartite Graphs</text>
+<text x="435.0" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a1a2e">Hopcroft-Karp vs Best General Matcher: Bipartite Speedup Ratios</text>
 <line x1="50" y1="318.0" x2="855" y2="318.0" stroke="#eee" stroke-width="0.5"/>
 <text x="45" y="318.0" text-anchor="end" dominant-baseline="middle" font-size="9" fill="#999">1x</text>
 <line x1="50" y1="286.9" x2="855" y2="286.9" stroke="#eee" stroke-width="0.5"/>
@@ -97,5 +97,6 @@
 <line x1="854.0" y1="337" x2="854.0" y2="340" stroke="#aaa" stroke-width="0.8"/>
 <text x="784.0" y="354" text-anchor="middle" font-size="9" font-weight="bold" fill="#444">Imbalanced K(m,10m)</text>
 <text x="14" y="176.5" text-anchor="middle" font-size="10" fill="#888" transform="rotate(-90, 14, 176.5)">Speedup (log scale)</text>
+<text x="452.5" y="372" text-anchor="middle" font-size="10" fill="#888">Graph Family and Size (n x n or m x 10m)</text>
 <text x="862" y="375" text-anchor="end" font-size="7" fill="#bbb">github.com/LucaCappelletti94/maximal-matching-benchmark</text>
 </svg>
