@@ -312,11 +312,11 @@
 <circle cx="-79.6" cy="-46.0" r="2" fill="#2060D0"/>
 <circle cx="-41.5" cy="-71.9" r="2" fill="#2060D0"/>
 </g>
-<rect x="260" y="833" width="10" height="10" fill="rgba(224,48,48,0.8)" stroke="#E03030" stroke-width="1" rx="2"/>
-<text x="274" y="842" font-size="9" fill="#555">Blossom</text>
-<rect x="340" y="833" width="10" height="10" fill="rgba(230,159,0,0.8)" stroke="#E69F00" stroke-width="1" rx="2"/>
-<text x="354" y="842" font-size="9" fill="#555">Gabow 1976</text>
-<rect x="438" y="833" width="10" height="10" fill="rgba(32,96,208,0.8)" stroke="#2060D0" stroke-width="1" rx="2"/>
-<text x="452" y="842" font-size="9" fill="#555">Micali-Vazirani</text>
+<rect x="300" y="833" width="10" height="10" fill="rgba(224,48,48,0.8)" stroke="#E03030" stroke-width="1" rx="2"/>
+<text x="314" y="842" font-size="9" fill="#555">Blossom</text>
+<rect x="380" y="833" width="10" height="10" fill="rgba(230,159,0,0.8)" stroke="#E69F00" stroke-width="1" rx="2"/>
+<text x="394" y="842" font-size="9" fill="#555">Gabow 1976</text>
+<rect x="478" y="833" width="10" height="10" fill="rgba(32,96,208,0.8)" stroke="#2060D0" stroke-width="1" rx="2"/>
+<text x="492" y="842" font-size="9" fill="#555">Micali-Vazirani</text>
 <text x="862" y="865" text-anchor="end" font-size="7" fill="#bbb">github.com/LucaCappelletti94/maximal-matching-benchmark</text>
 </svg>
