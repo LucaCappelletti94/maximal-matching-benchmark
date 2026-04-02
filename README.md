@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/LucaCappelletti94/maximal-matching-benchmark)](https://github.com/LucaCappelletti94/maximal-matching-benchmark/blob/main/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19164092.svg)](https://doi.org/10.5281/zenodo.19164092)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19384922.svg)](https://doi.org/10.5281/zenodo.19384922)
 
 ## Abstract
 
-We implemented and benchmark four static, unweighted maximum-cardinality matching algorithms in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: three general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], and Micali-Vazirani \[2\], plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. Raw Criterion.rs results are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
+We implemented and benchmark four static, unweighted maximum-cardinality matching algorithms in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: three general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], and Micali-Vazirani \[2\], plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. Raw Criterion.rs results are archived on [Zenodo](https://doi.org/10.5281/zenodo.19384922).
 
 Winner breakdown (strict lowest-median):
 
@@ -96,7 +96,7 @@ Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations,
 
 ## Headline Results
 
-The 12 largest **winner-vs-runner-up** speedup ratios across the full suite, using the versioned `median_ns` snapshot archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+The 12 largest **winner-vs-runner-up** speedup ratios across the full suite, using the versioned `median_ns` snapshot archived on [Zenodo](https://doi.org/10.5281/zenodo.19384922):
 
 | Family | Config | \|V\| | \|E\| | Winner | Runner-up | Winner Time | Runner-up Time | Speedup |
 |:--|:--|--:|--:|:--|:--|--:|--:|--:|
@@ -199,7 +199,7 @@ AMD Ryzen Threadripper PRO 5975WX (32 cores), 1 TiB RAM, Ubuntu 24.04, boost ena
 
 ## Reproducing
 
-Pre-built Criterion output is on [Zenodo](https://doi.org/10.5281/zenodo.19164092):
+Pre-built Criterion output is on [Zenodo](https://doi.org/10.5281/zenodo.19384922):
 
 ```bash
 # Browse archived results
