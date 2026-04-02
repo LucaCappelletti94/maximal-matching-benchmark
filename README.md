@@ -6,53 +6,24 @@
 
 ## Abstract
 
-We implemented and benchmark four static, unweighted maximum-cardinality matching algorithms in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: three general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], and Micali-Vazirani \[2\], plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. The current versioned benchmark snapshot covers graph configurations across benchmark groups. Raw Criterion.rs results are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
+We implemented and benchmark four static, unweighted maximum-cardinality matching algorithms in the [`geometric-traits`](https://github.com/earth-metabolome-initiative/geometric-traits) Rust crate: three general-graph algorithms, Blossom \[1\], Gabow 1976 \[16\], and Micali-Vazirani \[2\], plus the specialized bipartite algorithm Hopcroft-Karp \[15\]. Raw Criterion.rs results are archived on [Zenodo](https://doi.org/10.5281/zenodo.19164092).
 
 Winner breakdown (strict lowest-median):
 
 | Family | Wins | Typical regime |
 |:--|--:|:--|
-| Gabow 1976 | 184 | Most small-to-medium general graphs |
-| Micali-Vazirani | 84 | Large sparse and windmill-like inputs |
+| Gabow 1976 | 184 | General graphs up to V ≈ 500 |
+| Micali-Vazirani | 84 | Sparse graphs at V ≥ 1,000 and windmill-like inputs |
 | Hopcroft-Karp | 12 | Sparse/imbalanced bipartite inputs |
-| Blossom | 9 | Small dense baseline |
-
-## Table of Contents
-
-- [Maximum Matching Benchmark Suite](#maximum-matching-benchmark-suite)
-  - [Abstract](#abstract)
-  - [Table of Contents](#table-of-contents)
-  - [Decision Guide](#decision-guide)
-  - [Visual Summary](#visual-summary)
-    - [Scaling Behavior](#scaling-behavior)
-    - [Bipartite Speedup](#bipartite-speedup)
-  - [Algorithms Overview](#algorithms-overview)
-  - [What Problems These Algorithms Solve](#what-problems-these-algorithms-solve)
-  - [Graph Types](#graph-types)
-    - [Classical Structures](#classical-structures)
-    - [Bipartite Structures](#bipartite-structures)
-    - [Composite Structures](#composite-structures)
-    - [Random Graph Models](#random-graph-models)
-  - [Headline Results](#headline-results)
-  - [Bipartite Matching Comparison](#bipartite-matching-comparison)
-    - [Complete Bipartite K\_{n,n}](#complete-bipartite-k_nn)
-    - [Crown Graphs C\_n](#crown-graphs-c_n)
-    - [Random Sparse Bipartite (avg degree =6)](#random-sparse-bipartite-avg-degree-6)
-    - [Imbalanced Bipartite K\_{m, 10m}](#imbalanced-bipartite-k_m-10m)
-  - [Threats to Validity](#threats-to-validity)
-  - [Methodology](#methodology)
-    - [Benchmark Suites](#benchmark-suites)
-    - [Machine](#machine)
-  - [Reproducing](#reproducing)
-  - [References](#references)
+| Blossom | 9 | Dense graphs at V ≤ 50 |
 
 ## Decision Guide
 
 Scope: **unweighted maximum-cardinality matching on static graphs** only.
 
-1. **Bipartite?** Use Hopcroft-Karp on sparse/imbalanced inputs. On small dense balanced inputs, Gabow 1976 can be faster.
-2. **General graph?** Start with Gabow 1976 (most common winner overall).
-3. **Large and sparse?** Benchmark Micali-Vazirani (dominates stars, paths, cycles, windmills at scale).
+1. **Bipartite?** Use Hopcroft-Karp when n ≥ 100 per side or imbalanced. On balanced inputs with n ≤ 50 (V ≤ 100), Gabow 1976 can be faster.
+2. **General graph?** Start with Gabow 1976 (most common winner up to V ≈ 500).
+3. **V ≥ 1,000 and sparse?** Benchmark Micali-Vazirani (dominates stars, paths, cycles, windmills at V ≥ 1,000).
 
 ## Visual Summary
 
@@ -79,11 +50,11 @@ On stars, MV separates earliest; dense families compress the gap between all sol
   <img src="docs/bipartite_speedup.svg" alt="Bar chart showing Hopcroft-Karp speedup over general algorithms on bipartite graphs" width="100%">
 </p>
 
-Gabow 1976 beats HK on small/dense balanced bipartite inputs; HK dominates at larger sizes and on imbalanced inputs (14-30x).
+Gabow 1976 beats HK on balanced bipartite inputs with n ≤ 50 (V ≤ 100); HK dominates at n ≥ 100 and on all imbalanced inputs (14-30x).
 
 ## Algorithms Overview
 
-**Blossom** (Edmonds, 1965 \[1\]) finds augmenting paths via tree-growing with blossom contraction (shrinking odd cycles to preserve augmenting-path structure). The `geometric-traits` implementation uses linear-scan contraction, giving **O(V^2 E)** worst-case time. Fast on small graphs due to low constant overhead. Correctness rests on Berge's theorem \[3\].
+**Blossom** (Edmonds, 1965 \[1\]) finds augmenting paths via tree-growing with blossom contraction (shrinking odd cycles to preserve augmenting-path structure). The `geometric-traits` implementation uses linear-scan contraction, giving **O(V^2 E)** worst-case time. Fast on graphs with V ≤ 50 due to low constant overhead. Correctness rests on Berge's theorem \[3\].
 
 **Gabow 1976** \[16\] is a more efficient implementation of Edmonds-style blossom matching. It still targets general graphs and carries the same O(V^3) worst-case bound as classical blossom-based methods, but with much smaller constants in practice. In the committed snapshot, plain `Gabow1976` is the single most common winner.
 
@@ -91,79 +62,37 @@ Gabow 1976 beats HK on small/dense balanced bipartite inputs; HK dominates at la
 
 **Hopcroft-Karp** (1973 \[15\]) finds maximum cardinality matchings in bipartite graphs using layered BFS to discover shortest augmenting paths in phases. Time complexity: **O(E sqrt(V))**. Because it operates directly on the bipartite adjacency (rows = one partition, columns = the other), it avoids the overhead of general-graph blossom contraction entirely.
 
-| Property | Blossom | Gabow 1976 | Micali-Vazirani |
-|:--|:--|:--|:--|
-| Time complexity | O(V^2 E) | O(V^3) | O(E sqrt(V)) |
-| Graph type | General | General | General |
-| Typical role in this suite | Textbook baseline | Most common overall winner | Large sparse specialist |
-| Small graph performance | Good | Best of the general algorithms on many inputs | Higher constant overhead |
-| Large sparse graphs | O(V^3) when E = O(V) | Better constants, still cubic worst-case | Approximately O(V^1.5) for fixed degree |
-| Best regime | Small dense baseline | Small-to-medium general graphs | Large sparse graphs |
-
-Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations, while `Gabow1976` wins the other 8 smaller or denser balanced cases. See the [Bipartite Matching Comparison](#bipartite-matching-comparison) section.
-
-## What Problems These Algorithms Solve
-
-A maximum matching is the largest possible set of edges that do not share vertices.
-In plain terms, it answers: **how do I create as many disjoint one-to-one pairs as possible?**
-Blossom, Gabow 1976, and Micali-Vazirani solve this problem on **general graphs**, so they work even when
-the compatibility graph is not bipartite and contains odd cycles.
-
-| Real-world task | Matching interpretation |
-|:--|:--|
-| Peer review, mentoring, pair programming, partner work | Vertices are people; an edge means two people can be paired. A maximum matching finds the largest set of simultaneous pairings. |
-| Exchange and swap problems | Vertices are participants or assets; an edge means a feasible swap or exchange. Matching maximizes how many deals can happen at once. |
-| Communication and network scheduling | Vertices are endpoints; an edge means a direct link can be activated. Matching selects the largest set of non-conflicting simultaneous links. |
-| Molecular graph analysis | In chemistry, matchings and perfect matchings appear in analyses such as Kekule structures and resonance patterns in conjugated molecules. |
-| Graph coarsening and preprocessing | Matching can be used to merge or pair nearby vertices before partitioning, sparsification, or multilevel graph algorithms. |
-| Resource pairing in fleets, robotics, or sensor systems | Vertices are units; an edge means two units can be paired under distance, compatibility, or safety constraints. |
-
-All algorithm families compute maximum-cardinality matchings; see the [Decision Guide](#decision-guide) for when to use each. If your problem is weighted or preference-based, a different formulation may fit better:
-
-- **Bipartite cardinality matching:** often solved with specialized bipartite algorithms such as Hopcroft-Karp.
-- **Weighted one-to-one assignment:** use maximum-weight matching or Hungarian/min-cost-flow style methods.
-- **Stable matching:** use stable marriage / stable roommates algorithms, since maximum matching does not optimize for stability or preference satisfaction.
+Across the **full bipartite suite**, Hopcroft-Karp wins 12 of 20 configurations, while `Gabow1976` wins the other 8 balanced cases with n ≤ 50. See the [Bipartite Matching Comparison](#bipartite-matching-comparison) section.
 
 ## Graph Types
 
-The benchmarks use the following graph families. Most generators are from the `geometric-traits` crate; the sparse random bipartite benchmark in the Hopcroft-Karp comparison uses a small inline seeded generator to build equivalent bipartite and symmetric inputs.
-
-### Classical Structures
-
-- **Path graph** P_n: A linear chain of n vertices. Every vertex has degree 2 except the two endpoints (degree 1). E = V - 1.
-- **Cycle graph** C_n: A ring of n vertices, each with degree 2. E = V.
-- **Star graph** S_n: One central hub connected to n - 1 leaves. The hub has degree V - 1; all leaves have degree 1. E = V - 1.
-- **Wheel graph** W_n: A cycle of n - 1 vertices with one additional hub vertex connected to all of them. E = 2(V - 1).
-- **Grid graph** (k x k lattice): Vertices arranged in a square grid. Interior vertices have degree 4; boundary vertices have degree 2 or 3. E approximately 2V for large V.
-- **Torus graph**: A grid graph with wrap-around edges on both axes, so every vertex has degree exactly 4. E = 2V.
-- **Hexagonal lattice graph**: A honeycomb-style lattice. Interior vertices have degree 3. The benchmark uses rectangular `rows x cols` slices with boundary effects at small sizes.
-- **Triangular lattice graph**: A triangular tiling. Interior vertices have degree 6. It is denser than the square grid or torus at the same vertex count.
-- **Complete graph** K_n: Every pair of vertices is adjacent. E = V(V - 1)/2.
-- **Petersen graph** \[11\]: The standard 10-vertex, 15-edge 3-regular graph, included as a fixed small-graph baseline.
-
-### Bipartite Structures
-
-- **Complete bipartite graph** K_{m,n}: Two disjoint vertex sets of sizes m and n, with every cross-pair connected. E = m * n.
-- **Crown graph** C_n: The graph K_{n,n} with one perfect matching removed. Every vertex has degree n - 1. E = n(n - 1). Crown graphs are bipartite but not complete bipartite.
-- **Turan graph** T(n, r) \[12\]: The complete r-partite graph with parts as equal as possible. For r = 5 and n = 100, E = 4,000.
-
-### Composite Structures
-
-- **Barbell graph** B(k, p): Two complete graphs K_k joined by a path of p intermediate vertices. Combines dense clique regions with a sparse bridge.
-- **Friendship (windmill) graph** F_n \[13\]: n triangles sharing a single vertex. V = 2n + 1, E = 3n. The shared hub has degree 2n; all other vertices have degree 2.
-- **Windmill K4 graph**: n copies of K4 sharing one hub vertex. In the benchmarked `clique_size = 4` case, V = 3n + 1 and E = 6n.
-- **Hypercube graph** Q_d: The d-dimensional hypercube with V = 2^d vertices, each of degree d. E = d * 2^(d-1). Vertex-transitive and d-regular.
-
-### Random Graph Models
-
-- **Erdos-Renyi** G(n, m) \[5\]: n vertices with m edges placed uniformly at random. Used in the size-scaling benchmarks with varying n and m.
-- **Erdos-Renyi** G(n, p) \[5\]: each possible edge appears independently with probability p. Used in the density-scaling benchmarks and the fixed-size topology snapshots.
-- **Barabasi-Albert** BA(n, m) \[6\]: Preferential attachment model producing scale-free power-law degree distributions. Starting from a small clique, each new vertex attaches to m existing vertices with probability proportional to their current degree.
-- **Watts-Strogatz** WS(n, k, beta) \[7\]: Small-world model. Starts from a k-regular ring lattice and rewires each edge with probability beta, producing short average path lengths and high clustering.
-- **Stochastic Block Model** SBM \[8\]: Vertices are partitioned into communities. Edges within a community appear with probability p_in; edges between communities appear with probability p_out (p_in >> p_out).
-- **Random Geometric Graph** RGG(n, r) \[9\]: n points placed uniformly in the unit square; edges connect pairs within Euclidean distance r. Produces spatially clustered graphs.
-- **Random Regular Graph** RR(n, k) \[10\]: A graph chosen uniformly at random from all k-regular graphs on n vertices.
-- **Random Bipartite** G(n, n, p approx 6/n): seeded bipartite generator used in `bipartite/random`, with about six neighbors per left-partition vertex on average.
+| Family | Graph | \|E\| | Notes |
+|:--|:--|:--|:--|
+| Classical | Path P_n | V - 1 | Linear chain |
+| | Cycle C_n | V | Ring |
+| | Star S_n | V - 1 | Hub + leaves |
+| | Wheel W_n | 2(V - 1) | Cycle + hub |
+| | Grid (k x k) | ~2V | Square lattice, degree 2-4 |
+| | Torus | 2V | Grid with wrap-around, 4-regular |
+| | Hexagonal lattice | ~1.5V | Honeycomb, degree 3 |
+| | Triangular lattice | ~3V | Triangular tiling, degree 6 |
+| | Complete K_n | V(V-1)/2 | All pairs adjacent |
+| | Petersen \[11\] | 15 | Fixed 10-vertex 3-regular baseline |
+| Bipartite | Complete K_{m,n} | m * n | All cross-pairs |
+| | Crown C_n | n(n-1) | K_{n,n} minus a perfect matching |
+| | Turan T(n, r) \[12\] | ~V^2(1-1/r)/2 | Complete r-partite, equal parts |
+| Composite | Barbell B(k, p) | k(k-1) + p - 1 | Two K_k joined by a path |
+| | Friendship F_n \[13\] | 3n | n triangles sharing one hub |
+| | Windmill K4 | 6n | n copies of K4 sharing one hub |
+| | Hypercube Q_d | d * 2^(d-1) | d-dimensional, d-regular |
+| Random | Erdos-Renyi G(n,m) \[5\] | m | Uniform random edges |
+| | Erdos-Renyi G(n,p) \[5\] | ~p * V(V-1)/2 | Independent edge probability |
+| | Barabasi-Albert \[6\] | ~m * V | Preferential attachment, scale-free |
+| | Watts-Strogatz \[7\] | kV/2 | Small-world rewiring |
+| | Stochastic Block Model \[8\] | varies | Community structure (p_in >> p_out) |
+| | Random Geometric \[9\] | varies | Unit-square, Euclidean distance threshold |
+| | Random Regular \[10\] | kV/2 | Uniform k-regular |
+| | Random Bipartite | ~6V | Seeded, ~6 neighbors per left vertex |
 
 ## Headline Results
 
@@ -229,8 +158,6 @@ The last column reports `(best base general-algorithm median) / (HK median)`: ab
 | 20 x 200 | 220 | 4,000 | **5.10 us** | 126.63 us | 231.34 us | 157.52 us | HopcroftKarp | 24.9x |
 | 50 x 500 | 550 | 25,000 | **26.53 us** | 1.64 ms | 2.79 ms | 794.18 us | HopcroftKarp | 29.9x |
 | 100 x 1,000 | 1,100 | 100,000 | **97.77 us** | 11.65 ms | 19.63 ms | 2.87 ms | HopcroftKarp | 29.4x |
-
-Across all four bipartite groups: Gabow 1976 wins small/dense balanced cases, HK wins larger and all imbalanced cases (14-30x).
 
 ## Threats to Validity
 
